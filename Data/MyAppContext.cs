@@ -1,4 +1,4 @@
-using Bus_Booking_System.Models;
+﻿using Bus_Booking_System.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,8 @@ namespace Bus_Booking_System.Data
 
         public DbSet<Bus> Buses { get; set; } = null!;
         public DbSet<BusRoute> BusRoutes { get; set; } = null!;
-        public DbSet<Schedule> Schedules { get; set; } = null!;
+        public DbSet<City> Cities { get; set; } = null!;
+        public DbSet<Trip> Trips { get; set; } = null!;
         public DbSet<Seat> Seats { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
         public DbSet<SeatReservation> SeatReservations { get; set; } = null!;
@@ -39,3 +40,4 @@ namespace Bus_Booking_System.Data
 
     }
 }
+

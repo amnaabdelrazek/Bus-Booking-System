@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Booking_System.Models
@@ -18,15 +18,16 @@ namespace Bus_Booking_System.Models
 
         public SeatReservationStatus Status { get; set; }
 
-        [ForeignKey("Schedule")]
-        public int ScheduleId { get; set; }
+        [ForeignKey("Trip")]
+        public int TripId { get; set; }
 
 
         [Display(Name = "Expire At")]
         public DateTime ExpireAt { get; set; }
 
-        public Schedule? Schedule { get; set; }
+        public Trip? Trip { get; set; }
         public Booking? Booking { get; set; }
         public Seat? Seat { get; set; }
     }
 }
+

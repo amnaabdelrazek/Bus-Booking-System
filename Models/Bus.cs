@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Bus_Booking_System.Models
@@ -14,6 +14,7 @@ namespace Bus_Booking_System.Models
         public string Type { get; set; }
 
         public List<Seat> Seats { get; set; } = new List<Seat>();
-        public List<Schedule> Schedules { get; set; } = new List<Schedule>();
+        public List<Trip> Trips { get; set; } = new List<Trip>();
     }
 }
+

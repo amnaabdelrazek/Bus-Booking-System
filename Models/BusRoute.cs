@@ -1,13 +1,20 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bus_Booking_System.Models
 {
     public class BusRoute : BaseEntity
     {
-        public string Origin { get; set; }
+        [ForeignKey(nameof(OriginCity))]
+        public int OriginCityId { get; set; }
 
-        public string Destination { get; set; }
+        public City OriginCity { get; set; } = null!;
+
+        [ForeignKey(nameof(DestinationCity))]
+        public int DestinationCityId { get; set; }
+
+        public City DestinationCity { get; set; } = null!;
 
         public decimal Distance { get; set; }
 
@@ -16,6 +23,6 @@ namespace Bus_Booking_System.Models
 
         public decimal Price { get; set; }
 
-        public List<Schedule> Schedules { get; set; } = new List<Schedule>();
+        public List<Trip> Trips { get; set; } = new List<Trip>();
     }
 }

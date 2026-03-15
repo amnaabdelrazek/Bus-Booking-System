@@ -113,9 +113,6 @@ namespace Bus_Booking_System.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -123,12 +120,15 @@ namespace Bus_Booking_System.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("TripId");
 
                     b.HasIndex("UserId");
 
@@ -176,9 +176,8 @@ namespace Bus_Booking_System.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Destination")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DestinationCityId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Distance")
                         .HasPrecision(10, 2)
@@ -187,9 +186,8 @@ namespace Bus_Booking_System.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Origin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OriginCityId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
@@ -200,10 +198,14 @@ namespace Bus_Booking_System.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DestinationCityId");
+
+                    b.HasIndex("OriginCityId");
+
                     b.ToTable("BusRoutes");
                 });
 
-            modelBuilder.Entity("Bus_Booking_System.Models.Schedule", b =>
+            modelBuilder.Entity("Bus_Booking_System.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,37 +213,19 @@ namespace Bus_Booking_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("AvailableSeats")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BusRouteId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BusId");
-
-                    b.HasIndex("BusRouteId");
-
-                    b.ToTable("Schedules");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Seat", b =>
@@ -292,24 +276,65 @@ namespace Bus_Booking_System.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("ScheduleId");
-
                     b.HasIndex("SeatId");
 
+                    b.HasIndex("TripId");
+
                     b.ToTable("SeatReservations");
+                });
+
+            modelBuilder.Entity("Bus_Booking_System.Models.Trip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ArrivalTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AvailableSeats")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BusRouteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusId");
+
+                    b.HasIndex("BusRouteId");
+
+                    b.ToTable("Trips");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -447,9 +472,9 @@ namespace Bus_Booking_System.Migrations
 
             modelBuilder.Entity("Bus_Booking_System.Models.Booking", b =>
                 {
-                    b.HasOne("Bus_Booking_System.Models.Schedule", "Schedule")
+                    b.HasOne("Bus_Booking_System.Models.Trip", "Trip")
                         .WithMany("Bookings")
-                        .HasForeignKey("ScheduleId")
+                        .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -459,28 +484,28 @@ namespace Bus_Booking_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Schedule");
+                    b.Navigation("Trip");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bus_Booking_System.Models.Schedule", b =>
+            modelBuilder.Entity("Bus_Booking_System.Models.BusRoute", b =>
                 {
-                    b.HasOne("Bus_Booking_System.Models.Bus", "Bus")
-                        .WithMany("Schedules")
-                        .HasForeignKey("BusId")
+                    b.HasOne("Bus_Booking_System.Models.City", "DestinationCity")
+                        .WithMany("RoutesAsDestination")
+                        .HasForeignKey("DestinationCityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bus_Booking_System.Models.BusRoute", "BusRoute")
-                        .WithMany("Schedules")
-                        .HasForeignKey("BusRouteId")
+                    b.HasOne("Bus_Booking_System.Models.City", "OriginCity")
+                        .WithMany("RoutesAsOrigin")
+                        .HasForeignKey("OriginCityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Bus");
+                    b.Navigation("DestinationCity");
 
-                    b.Navigation("BusRoute");
+                    b.Navigation("OriginCity");
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Seat", b =>
@@ -502,23 +527,42 @@ namespace Bus_Booking_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bus_Booking_System.Models.Schedule", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Bus_Booking_System.Models.Seat", "Seat")
                         .WithMany("SeatReservations")
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Bus_Booking_System.Models.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Booking");
 
-                    b.Navigation("Schedule");
-
                     b.Navigation("Seat");
+
+                    b.Navigation("Trip");
+                });
+
+            modelBuilder.Entity("Bus_Booking_System.Models.Trip", b =>
+                {
+                    b.HasOne("Bus_Booking_System.Models.Bus", "Bus")
+                        .WithMany("Trips")
+                        .HasForeignKey("BusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bus_Booking_System.Models.BusRoute", "BusRoute")
+                        .WithMany("Trips")
+                        .HasForeignKey("BusRouteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bus");
+
+                    b.Navigation("BusRoute");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -584,24 +628,31 @@ namespace Bus_Booking_System.Migrations
 
             modelBuilder.Entity("Bus_Booking_System.Models.Bus", b =>
                 {
-                    b.Navigation("Schedules");
-
                     b.Navigation("Seats");
+
+                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.BusRoute", b =>
                 {
-                    b.Navigation("Schedules");
+                    b.Navigation("Trips");
                 });
 
-            modelBuilder.Entity("Bus_Booking_System.Models.Schedule", b =>
+            modelBuilder.Entity("Bus_Booking_System.Models.City", b =>
                 {
-                    b.Navigation("Bookings");
+                    b.Navigation("RoutesAsDestination");
+
+                    b.Navigation("RoutesAsOrigin");
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Seat", b =>
                 {
                     b.Navigation("SeatReservations");
+                });
+
+            modelBuilder.Entity("Bus_Booking_System.Models.Trip", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Bus_Booking_System.Attributes;
 
 namespace Bus_Booking_System.Models
 {
-    public enum ScheduleStatus
+    public enum TripStatus
     {
         OpenForBooking,
         Cancelled,
@@ -12,7 +12,7 @@ namespace Bus_Booking_System.Models
     }
 
     [ArrivalAfterDeparture]
-    public class Schedule : BaseEntity
+    public class Trip : BaseEntity
     {
         public int BusRouteId { get; set; }
 
@@ -25,7 +25,7 @@ namespace Bus_Booking_System.Models
         public DateTime ArrivalTime { get; set; }
 
         [Display(Name = "Status")]
-        public ScheduleStatus Status { get; set; }
+        public TripStatus Status { get; set; }
 
         [Display(Name = "Available Seats")]
         public int AvailableSeats { get; set; }
@@ -35,3 +35,4 @@ namespace Bus_Booking_System.Models
         public List<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }
+

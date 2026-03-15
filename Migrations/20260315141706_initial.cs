@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bus_Booking_System.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentity : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,22 +73,18 @@ namespace Bus_Booking_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BusRoutes",
+                name: "Cities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Destination = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Distance = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    TimeNeeded = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BusRoutes", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,7 +105,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,7 +126,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -150,7 +146,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,13 +164,13 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +190,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -216,11 +212,42 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.BusId,
                         principalTable: "Buses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schedules",
+                name: "BusRoutes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OriginCityId = table.Column<int>(type: "int", nullable: false),
+                    DestinationCityId = table.Column<int>(type: "int", nullable: false),
+                    Distance = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TimeNeeded = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BusRoutes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BusRoutes_Cities_DestinationCityId",
+                        column: x => x.DestinationCityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_BusRoutes_Cities_OriginCityId",
+                        column: x => x.OriginCityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Trips",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -236,19 +263,19 @@ namespace Bus_Booking_System.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schedules", x => x.Id);
+                    table.PrimaryKey("PK_Trips", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Schedules_BusRoutes_BusRouteId",
+                        name: "FK_Trips_BusRoutes_BusRouteId",
                         column: x => x.BusRouteId,
                         principalTable: "BusRoutes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Schedules_Buses_BusId",
+                        name: "FK_Trips_Buses_BusId",
                         column: x => x.BusId,
                         principalTable: "Buses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -258,7 +285,7 @@ namespace Bus_Booking_System.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ScheduleId = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -272,13 +299,13 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Bookings_Schedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedules",
+                        name: "FK_Bookings_Trips_TripId",
+                        column: x => x.TripId,
+                        principalTable: "Trips",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -290,6 +317,7 @@ namespace Bus_Booking_System.Migrations
                     BookingId = table.Column<int>(type: "int", nullable: false),
                     SeatId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<int>(type: "int", nullable: false),
                     ExpireAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -302,11 +330,17 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_SeatReservations_Seats_SeatId",
                         column: x => x.SeatId,
                         principalTable: "Seats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_SeatReservations_Trips_TripId",
+                        column: x => x.TripId,
+                        principalTable: "Trips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -351,9 +385,9 @@ namespace Bus_Booking_System.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_ScheduleId",
+                name: "IX_Bookings_TripId",
                 table: "Bookings",
-                column: "ScheduleId");
+                column: "TripId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
@@ -361,14 +395,14 @@ namespace Bus_Booking_System.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedules_BusId",
-                table: "Schedules",
-                column: "BusId");
+                name: "IX_BusRoutes_DestinationCityId",
+                table: "BusRoutes",
+                column: "DestinationCityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedules_BusRouteId",
-                table: "Schedules",
-                column: "BusRouteId");
+                name: "IX_BusRoutes_OriginCityId",
+                table: "BusRoutes",
+                column: "OriginCityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SeatReservations_BookingId",
@@ -381,9 +415,24 @@ namespace Bus_Booking_System.Migrations
                 column: "SeatId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SeatReservations_TripId",
+                table: "SeatReservations",
+                column: "TripId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Seats_BusId",
                 table: "Seats",
                 column: "BusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trips_BusId",
+                table: "Trips",
+                column: "BusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trips_BusRouteId",
+                table: "Trips",
+                column: "BusRouteId");
         }
 
         /// <inheritdoc />
@@ -420,13 +469,16 @@ namespace Bus_Booking_System.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Schedules");
+                name: "Trips");
 
             migrationBuilder.DropTable(
                 name: "BusRoutes");
 
             migrationBuilder.DropTable(
                 name: "Buses");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
         }
     }
 }

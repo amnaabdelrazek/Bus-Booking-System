@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Bus_Booking_System.Models;
 
@@ -14,16 +14,16 @@ namespace Bus_Booking_System.Attributes
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is not Schedule schedule)
+            if (value is not Trip trip)
             {
                 return ValidationResult.Success;
             }
 
-            if (schedule.ArrivalTime <= schedule.DepartureTime)
+            if (trip.ArrivalTime <= trip.DepartureTime)
             {
                 return new ValidationResult(
                     ErrorMessage,
-                    new[] { nameof(Schedule.ArrivalTime), nameof(Schedule.DepartureTime) }
+                    new[] { nameof(Trip.ArrivalTime), nameof(Trip.DepartureTime) }
                 );
             }
 
@@ -31,3 +31,4 @@ namespace Bus_Booking_System.Attributes
         }
     }
 }
+
