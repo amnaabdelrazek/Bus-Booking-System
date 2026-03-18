@@ -72,5 +72,10 @@ namespace Bus_Booking_System.Controllers
             await _accountRepository.Logout();
             return RedirectToAction("Login", "Account");
         }
+
+        public IActionResult test()
+        {
+            return View();
+        }
     }
 }

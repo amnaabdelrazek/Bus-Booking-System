@@ -1,0 +1,202 @@
+﻿@model Bus_Booking_System.ViewModel.TripIndexVM
+@{
+    ViewData["Title"] = "Trips";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Available Trips</h2>
+            <p class="text-muted small">@Model.Trips.Count trips found</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 15px; position:sticky; top:20px">
+                <h5 class="fw-bold mb-4">Filters</h5>
+                <form asp-action="Index" method="get">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Date</label>
+                        <input type="date" name="travelDate" class="form-control form-control-sm bg-light border-0" value="@Model.FilterDate?.ToString("yyyy-MM-dd")">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Trip Status</label>
+                        <select name="status" class="form-select form-select-sm bg-light border-0">
+                            <option value="">All Statuses</option>
+                            <option value="OpenForBooking">Open For Booking</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-label text-muted small fw-bold">Price</label>
+                            <span class="fw-bold text-primary small">$<span id="priceValue">@Model.FilterMaxPrice</span></span>
+                        </div>
+                        <input type="range" name="maxPrice" class="form-range" min="@Model.MinPrice" max="@Model.MaxPrice" step="5" value="@Model.FilterMaxPrice"
+                               oninput="document.getElementById('priceValue').innerText = this.value" />
+                        <div class="d-flex justify-content-between small text-muted" style="font-size: 0.7rem;">
+                            <span>$@Model.MinPrice</span>
+                            <span>$@Model.MaxPrice</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-sm w-100 py-2 mb-2" style="border-radius: 8px;">Apply Filters</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm w-100 py-2" style="border-radius: 8px;">Clear</a>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="row g-3">
+                @if (!Model.Trips.Any())
+                {
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-search text-muted display-4"></i>
+                        <h5 class="text-muted mt-3">No trips match your filters.</h5>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var trip in Model.Trips)
+                    {
+                        bool isCancelled = trip.Status == "Cancelled";
+                        bool isCompleted = trip.Status == "Completed";
+                        bool isOpen = trip.Status == "OpenForBooking";
+
+                        string cardStyle = isCancelled ? "opacity:0.7; filter:grayscale(0.5);" : "";
+                        string badgeClass = trip.Status switch
+                        {
+                            
+                            "Completed" => "bg-primary-subtle text-primary border border-primary",
+                            "Cancelled" => "bg-secondary-subtle text-secondary border border-secondary",
+                            _ => ""
+                        };
+
+                        <div class="col-md-6" style="@cardStyle">
+                            <div class="card border-0 shadow-sm p-3 h-card" style="border-radius:15px;">
+                                <div class="card-body p-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge rounded-pill @badgeClass px-2 py-1" style="font-size: 0.7rem;">
+                                            @if (isOpen)
+                                            {
+                                                <i class="bi bi-check2-circle me-1"></i>
+                                            }
+                                            @if (isCancelled)
+                                            {
+                                                <i class="bi bi-x-circle me-1"></i>
+                                            }
+                                            @if (isCompleted)
+                                            {
+                                                <i class="bi bi-flag me-1"></i>
+                                            }
+                                            @trip.Status
+                                        </span>
+                                        <small class="text-muted fw-bold" style="font-size: 0.75rem;">@trip.Date.ToString("dd MMM, yyyy")</small>
+                                    </div>
+
+                                    <div class="row align-items-center text-center my-3 g-0">
+                                        <div class="col-5 text-start">
+                                            <p class="small text-muted mb-0" style="font-size: 0.65rem;">From</p>
+                                            <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">@trip.FromCity</h6>
+                                            <div class="text-primary fw-bold" style="font-size: 0.75rem;">
+                                                <i class="bi bi-clock"></i> @trip.DepartureTime.ToString("hh:mm tt")
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 p-0">
+                                            <div class="border-top w-100 position-relative">
+                                                <i class="bi bi-bus-front position-absolute top-50 start-50 translate-middle bg-white px-1 text-muted small"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5 text-end">
+                                            <p class="small text-muted mb-0" style="font-size: 0.65rem;">To</p>
+                                            <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">@trip.ToCity</h6>
+                                            <div class="text-muted" style="font-size: 0.75rem;">
+                                                <i class="bi bi-clock-history"></i> @trip.ArrivalTime.ToString("hh:mm tt")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-3" style="font-size: 0.75rem;">
+                                        <span class="text-muted"><i class="bi bi-info-circle me-1"></i> @trip.BusType</span>
+                                        <span class="@(trip.AvailableSeats < 5 ? "text-danger fw-bold" : "text-muted")">
+                                            <i class="bi bi-person-badge me-1"></i> @trip.AvailableSeats Seats left
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                                        <div>
+                                            <span class="fw-bold h5 mb-0">$@trip.Price</span>
+                                            <small class="text-muted" style="font-size: 0.65rem;">/seat</small>
+                                        </div>
+
+                                        <div class="btn-group btn-group-sm">
+                                            @if (isOpen)
+                                            {
+                                                @* <button class="btn btn-light px-2 fw-bold me-1" style="border-radius: 8px;">Details</button> *@
+                                                <a asp-controller="Trip" asp-action="ShowTrip" asp-route-id="@trip.tripId" class="btn btn-dark px-2 fw-bold" style="border-radius: 8px;">Book</a>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-outline-secondary disabled w-100 px-3" style="border-radius: 8px; font-size: 0.7rem;">
+                                                    @(isCancelled ? "Cancelled" : "Completed")
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+       
+      
+     
+        .h-card {
+            transition: transform 0.2s;
+            max-height: 240px;
+        }
+
+            .h-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important;
+            }
+
+        .form-range::-webkit-slider-thumb {
+            background: #212529;
+            width: 1rem;
+            height: 1rem;
+        }
+
+
+        .bg-success-subtle {
+            background-color: #d1e7dd;
+        }
+
+        .bg-secondary-subtle {
+            background-color: #e2e3e5;
+        }
+
+        .bg-primary-subtle {
+            background-color: #cfe2ff;
+        }
+
+        
+        .card-body {
+            padding: 0.5rem !important;
+        }
+    </style>
+}

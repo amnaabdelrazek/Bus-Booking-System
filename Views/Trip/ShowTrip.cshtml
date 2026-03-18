@@ -1,0 +1,116 @@
+﻿@model Bus_Booking_System.ViewModel.TripSeatBookingVM
+@{
+    ViewData["Title"] = "ShowTrip";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    /* تنسيق شبكة الكراسي لتوفير ممر (Aisle) في المنتصف */
+    .seat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) 40px repeat(2, 1fr); /* عمودين - مسافة ممر - عمودين */
+        gap: 15px;
+        text-align: center;
+    }
+
+    .aisle {
+        grid-column: 3; /* العمود الثالث هو الفراغ */
+    }
+
+    .btn-seat {
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+    /* تصغير حجم الـ Summary Trip */
+    .summary-card {
+        border-radius: 15px;
+        max-width: 320px; /* تحديد عرض أصغر */
+        margin-left: auto;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4" style="border-radius:20px; border:none;">
+                <h3 class="mb-4 fw-bold">Select Your Seat</h3>
+
+                <div class="bus-container border p-5 bg-light mx-auto" style="max-width:450px; border-radius:30px; position:relative;">
+                    <div class="text-end mb-4">
+                        <span class="badge bg-dark p-2">Driver</span>
+                    </div>
+
+                    <div class="seat-grid">
+                        @for (int i = 1; i <= Model.TotalSeats; i++)
+                        {
+                            var seatNum = i.ToString();
+                            var isBooked = Model.BookedSeats?.Contains(seatNum) ?? false;
+
+                            @if (isBooked)
+                            {
+                                <button class="btn btn-secondary disabled py-3" style="opacity:0.3; border-radius:10px;">
+                                    S(@seatNum)
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-controller="Booking"
+                                   asp-action="Confirm"
+                                   asp-route-tripId="@Model.TripId"
+                                   asp-route-seatId="@i"
+                                   class="btn btn-outline-dark fw-bold py-3 btn-seat">
+                                    S(@seatNum)
+                                </a>
+                            }
+
+                            @* إضافة فراغ الممر بعد كل كرسيين في الصف *@
+                            if (i % 2 == 0 && i % 4 != 0)
+                            {
+                                <div class="aisle"></div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 sticky-top summary-card" style="top:20px; border:none;">
+                <h5 class="fw-bold mb-4">Trip Summary</h5>
+
+                <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-geo-alt text-muted me-3 fs-5"></i>
+                    <div>
+                        <label class="text-muted small d-block">Route</label>
+                        <span class="fw-bold">@Model.FromCity &rarr; @Model.ToCity</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start mb-3">
+                    <i class="bi bi-calendar3 text-muted me-3 fs-5"></i>
+                    <div>
+                        <label class="text-muted small d-block">Date & Time</label>
+                        <span class="fw-bold text-nowrap">@Model.Date.ToString("dd/MM/yyyy") at @Model.Time.ToString("hh:mm tt")</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start mb-4">
+                    <i class="bi bi-currency-dollar text-muted me-3 fs-5"></i>
+                    <div>
+                        <label class="text-muted small d-block">Price per seat</label>
+                        <span class="h5 text-primary fw-bold mb-0">$@Model.Price</span>
+                    </div>
+                </div>
+
+                <hr class="text-muted opacity-25">
+
+                <div class="alert alert-info border-0 py-2 small d-flex align-items-center" style="background-color: #e0f7fa; color: #006064;">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <span>Click on a seat number to start booking.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
