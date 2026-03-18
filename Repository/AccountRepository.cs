@@ -28,7 +28,6 @@ namespace Bus_Booking_System.Repository
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                FullName = model.FullName,
                 PhoneNumber = model.Phone
             };
 

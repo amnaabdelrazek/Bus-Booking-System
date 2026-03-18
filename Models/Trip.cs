@@ -24,6 +24,9 @@ namespace Bus_Booking_System.Models
         [Display(Name = "Arrival Time")]
         public DateTime ArrivalTime { get; set; }
 
+        [Display(Name = "Travel Date")]
+        public DateTime TravelDate { get; set; }
+
         [Display(Name = "Status")]
         public TripStatus Status { get; set; }
 

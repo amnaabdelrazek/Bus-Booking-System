@@ -19,6 +19,7 @@ namespace Bus_Booking_System
                 .AddEntityFrameworkStores<MyAppContext>()
                 .AddDefaultTokenProviders();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<ITripRepository, TripRepository>();
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())

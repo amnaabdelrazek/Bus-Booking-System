@@ -17,6 +17,18 @@ html {
   min-height: 100%;
 }
 
+.footer-links a:hover {
+    color: #ffffff !important;
+    padding-left: 5px;
+    transition: all 0.3s ease;
+}
+
 body {
-  margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }

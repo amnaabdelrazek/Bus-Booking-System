@@ -50,9 +50,51 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="bg-dark text-white pt-5 pb-4 mt-5">
         <div class="container">
-            &copy; 2026 - Bus_Booking_System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row text-md-start">
+                <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="bi bi-bus-front me-2"></i>BusBooking
+                    </h5>
+                    <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">
+                        Your trusted platform for booking comfortable and affordable bus trips across the country.
+                    </p>
+                </div>
+
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <h6 class="fw-bold mb-4">Quick Links</h6>
+                    <ul class="list-unstyled mb-0 footer-links">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a asp-controller="Trip" asp-action="Index" class="text-muted text-decoration-none">Trips</a></li>
+                        <li class="mb-2"><a asp-controller="Account" asp-action="Index" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a asp-action="Booking" class="text-muted text-decoration-none">My Bookings</a></li>
+                        <li class="mb-2"><a asp-action="Admin" class="text-muted text-decoration-none">Admin</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <h6 class="fw-bold mb-4">Contact</h6>
+                    <p class="text-muted small mb-2">
+                        <i class="bi bi-envelope me-2"></i> email: support@busbooking.com
+                    </p>
+                    <p class="text-muted small mb-2">
+                        <i class="bi bi-telephone me-2"></i> Phone: +1 (555) 123-4567
+                    </p>
+                    <p class="text-muted small">
+                        <i class="bi bi-geo-alt me-2"></i> Address: 123 Transit Ave, City
+                    </p>
+                </div>
+            </div>
+
+            <hr class="border-secondary my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-12 text-center">
+                    <p class="text-muted small mb-0">
+                        © @DateTime.Now.Year BusBooking. All rights reserved.
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
