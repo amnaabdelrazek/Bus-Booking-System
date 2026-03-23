@@ -10,7 +10,6 @@
         [EmailAddress]
         public string Email { get; set; }
 
-
         
 
         [Required]
