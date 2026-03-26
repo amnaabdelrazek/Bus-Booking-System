@@ -955,3 +955,4 @@ C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\obj\Debug\net8.0\Bus Booking System.
 C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\obj\Debug\net8.0\Bus Booking System.genruntimeconfig.cache
 C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\obj\Debug\net8.0\ref\Bus Booking System.dll
 C:\ITI Matrial\MVC\Bus Booking System\Bus Booking System\obj\Debug\net8.0\Bus Booking System.sourcelink.json
+C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\bin\Debug\net8.0\libman.json

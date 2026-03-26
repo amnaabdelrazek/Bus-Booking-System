@@ -53,7 +53,7 @@ namespace Bus_Booking_System.Controllers
                     DepartureTime = t.DepartureTime,
                     ArrivalTime = t.ArrivalTime,
                     Date = t.TravelDate,
-                    Status = t.Status.ToString(),
+                    Status = t.AvailableSeats <= 0 ? "Completed" : t.Status.ToString(),
                     AvailableSeats = t.AvailableSeats,
                     BusType = t.Bus.Type,
                     Price = t.BusRoute.Price

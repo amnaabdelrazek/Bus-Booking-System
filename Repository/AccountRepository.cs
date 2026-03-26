@@ -80,7 +80,9 @@ namespace Bus_Booking_System.Repository
             {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("Id", user.Id.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
