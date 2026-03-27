@@ -1110,8 +1110,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>87p4xtea33</Fingerprint>
-      <Integrity>lA122L4UfOFD8QYGV1QI1YL+ziLh8J4ZFlXzrzbHeP0=</Integrity>
+      <Fingerprint>l67cc241uf</Fingerprint>
+      <Integrity>XQP2hrAUV14a9C87kxxt4CnhaRE6xYM1HA3BfBc05xc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\microsoft-signalr\signalr.min.js'))</OriginalItemSpec>

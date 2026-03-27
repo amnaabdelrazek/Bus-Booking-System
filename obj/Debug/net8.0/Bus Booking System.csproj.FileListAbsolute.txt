@@ -676,7 +676,6 @@ C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\staticwe
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Bus Booking System.props
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Bus Booking System.props
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\Bus Book.A8FE3E23.Up2Date
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\Bus Booking System.dll
 C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\obj\Debug\net8.0\refint\Bus Booking System.dll
@@ -956,3 +955,4 @@ C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\obj\Debug\net8.0\Bus Booking System.
 C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\obj\Debug\net8.0\ref\Bus Booking System.dll
 C:\ITI Matrial\MVC\Bus Booking System\Bus Booking System\obj\Debug\net8.0\Bus Booking System.sourcelink.json
 C:\D\ITI\MVC\MVC_Project\Bus-Booking-System\bin\Debug\net8.0\libman.json
+C:\Users\ZELDAAA\Desktop\ITI Projects\BusBookingSystem\bin\Debug\net8.0\libman.json
