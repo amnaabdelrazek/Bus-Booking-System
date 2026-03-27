@@ -36,7 +36,38 @@ namespace Bus_Booking_System.Data
             modelBuilder.Entity<BusRoute>()
                 .Property(r => r.Price)
                 .HasPrecision(10, 2);
-        }
+
+			
+			modelBuilder.Entity<BusRoute>()
+				.HasOne(br => br.OriginCity)
+				.WithMany(c => c.RoutesAsOrigin)
+				.HasForeignKey(br => br.OriginCityId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			
+			modelBuilder.Entity<BusRoute>()
+				.HasOne(br => br.DestinationCity)
+				.WithMany(c => c.RoutesAsDestination)
+				.HasForeignKey(br => br.DestinationCityId)
+				.OnDelete(DeleteBehavior.Restrict);
+			modelBuilder.Entity<SeatReservation>()
+				.HasOne(sr => sr.Seat)
+				.WithMany()
+				.HasForeignKey(sr => sr.SeatId)
+				.OnDelete(DeleteBehavior.NoAction); 
+
+			modelBuilder.Entity<SeatReservation>()
+				.HasOne(sr => sr.Trip)
+				.WithMany()
+				.HasForeignKey(sr => sr.TripId)
+				.OnDelete(DeleteBehavior.NoAction); 
+
+			modelBuilder.Entity<SeatReservation>()
+				.HasOne(sr => sr.Booking)
+				.WithMany()
+				.HasForeignKey(sr => sr.BookingId)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
 
     }
 }

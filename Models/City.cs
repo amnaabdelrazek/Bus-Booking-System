@@ -7,10 +7,10 @@ namespace Bus_Booking_System.Models
     {
         public string Name { get; set; } = null!;
 
-        [InverseProperty(nameof(BusRoute.OriginCity))]
+        //[InverseProperty(nameof(BusRoute.OriginCity))]
         public List<BusRoute> RoutesAsOrigin { get; set; } = new List<BusRoute>();
 
-        [InverseProperty(nameof(BusRoute.DestinationCity))]
+       // [InverseProperty(nameof(BusRoute.DestinationCity))]
         public List<BusRoute> RoutesAsDestination { get; set; } = new List<BusRoute>();
     }
 }
