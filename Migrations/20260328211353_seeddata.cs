@@ -8,23 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bus_Booking_System.Migrations
 {
     /// <inheritdoc />
-<<<<<<< HEAD
-
-    public partial class seeddata2 : Migration
-
-  
-
-=======
-<<<<<<< HEAD:Migrations/20260328221434_seeddata2.cs
-    public partial class seeddata2 : Migration
-=======
 <<<<<<<< HEAD:Migrations/20260328211353_seeddata.cs
     public partial class seeddata : Migration
 ========
     public partial class FirstAmr : Migration
 >>>>>>>> Amr:Migrations/20260327082024_FirstAmr.cs
->>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b:Migrations/20260327082024_FirstAmr.cs
->>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -123,7 +111,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,7 +132,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -164,7 +152,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,13 +170,13 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,7 +196,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,7 +218,7 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.BusId,
                         principalTable: "Buses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -288,13 +276,13 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.BusRouteId,
                         principalTable: "BusRoutes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Trips_Buses_BusId",
                         column: x => x.BusId,
                         principalTable: "Buses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -318,13 +306,13 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bookings_Trips_TripId",
                         column: x => x.TripId,
                         principalTable: "Trips",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -338,6 +326,8 @@ namespace Bus_Booking_System.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     TripId = table.Column<int>(type: "int", nullable: false),
                     ExpireAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BookingId1 = table.Column<int>(type: "int", nullable: true),
+                    SeatId1 = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -349,19 +339,27 @@ namespace Bus_Booking_System.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SeatReservations_Bookings_BookingId1",
+                        column: x => x.BookingId1,
+                        principalTable: "Bookings",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SeatReservations_Seats_SeatId",
                         column: x => x.SeatId,
                         principalTable: "Seats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SeatReservations_Seats_SeatId1",
+                        column: x => x.SeatId1,
+                        principalTable: "Seats",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SeatReservations_Trips_TripId",
                         column: x => x.TripId,
                         principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -385,15 +383,15 @@ namespace Bus_Booking_System.Migrations
             migrationBuilder.InsertData(
                 table: "Buses",
                 columns: new[] { "Id", "BusNum", "CreatedAt", "IsDeleted", "TotalSeats", "Type" },
-                values: new object[] { 1, "BUS001", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 40, "Luxury" });
+                values: new object[] { 1, "BUS-001", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, 40, "VIP" });
 
             migrationBuilder.InsertData(
                 table: "Cities",
                 columns: new[] { "Id", "CreatedAt", "IsDeleted", "Name" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "City A" },
-                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "City B" }
+                    { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Cairo" },
+                    { 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "Alexandria" }
                 });
 
             migrationBuilder.InsertData(
@@ -408,15 +406,53 @@ namespace Bus_Booking_System.Migrations
             migrationBuilder.InsertData(
                 table: "BusRoutes",
                 columns: new[] { "Id", "CreatedAt", "DestinationCityId", "Distance", "IsDeleted", "OriginCityId", "Price", "TimeNeeded" },
-                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 200m, false, 1, 300m, new TimeSpan(0, 3, 0, 0, 0) });
+                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 220m, false, 1, 150m, new TimeSpan(0, 3, 0, 0, 0) });
 
             migrationBuilder.InsertData(
                 table: "Seats",
                 columns: new[] { "Id", "BusId", "CreatedAt", "IsDeleted", "SeatNum" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "1A" },
-                    { 2, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "1B" }
+                    { 1, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "1" },
+                    { 2, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "2" },
+                    { 3, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "3" },
+                    { 4, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "4" },
+                    { 5, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "5" },
+                    { 6, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "6" },
+                    { 7, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "7" },
+                    { 8, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "8" },
+                    { 9, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "9" },
+                    { 10, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "10" },
+                    { 11, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "11" },
+                    { 12, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "12" },
+                    { 13, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "13" },
+                    { 14, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "14" },
+                    { 15, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "15" },
+                    { 16, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "16" },
+                    { 17, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "17" },
+                    { 18, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "18" },
+                    { 19, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "19" },
+                    { 20, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "20" },
+                    { 21, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "21" },
+                    { 22, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "22" },
+                    { 23, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "23" },
+                    { 24, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "24" },
+                    { 25, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "25" },
+                    { 26, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "26" },
+                    { 27, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "27" },
+                    { 28, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "28" },
+                    { 29, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "29" },
+                    { 30, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "30" },
+                    { 31, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "31" },
+                    { 32, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "32" },
+                    { 33, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "33" },
+                    { 34, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "34" },
+                    { 35, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "35" },
+                    { 36, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "36" },
+                    { 37, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "37" },
+                    { 38, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "38" },
+                    { 39, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "39" },
+                    { 40, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "40" }
                 });
 
             migrationBuilder.InsertData(
@@ -503,9 +539,19 @@ namespace Bus_Booking_System.Migrations
                 column: "BookingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SeatReservations_BookingId1",
+                table: "SeatReservations",
+                column: "BookingId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SeatReservations_SeatId",
                 table: "SeatReservations",
                 column: "SeatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SeatReservations_SeatId1",
+                table: "SeatReservations",
+                column: "SeatId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SeatReservations_TripId",

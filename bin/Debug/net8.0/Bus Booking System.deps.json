@@ -8,7 +8,14 @@
     ".NETCoreApp,Version=v8.0": {
       "Bus Booking System/1.0.0": {
         "dependencies": {
+<<<<<<< HEAD
           "Microsoft.AspNetCore.Identity": "2.3.9",
+=======
+<<<<<<< HEAD
+          "Microsoft.AspNetCore.Identity": "2.3.9",
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.25",
           "Microsoft.AspNetCore.Identity.UI": "8.0.25",
           "Microsoft.EntityFrameworkCore": "8.0.25",
@@ -595,6 +602,10 @@
           }
         }
       },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "Microsoft.AspNetCore.Authentication/2.3.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Authentication.Core": "2.3.0",
@@ -625,6 +636,11 @@
           "Microsoft.AspNetCore.Http.Extensions": "2.3.0"
         }
       },
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "Microsoft.AspNetCore.Cryptography.Internal/8.0.25": {
         "runtime": {
           "lib/net8.0/Microsoft.AspNetCore.Cryptography.Internal.dll": {
@@ -644,6 +660,10 @@
           }
         }
       },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "Microsoft.AspNetCore.DataProtection/2.3.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Cryptography.Internal": "8.0.25",
@@ -707,6 +727,11 @@
           "Microsoft.Extensions.Identity.Core": "8.0.25"
         }
       },
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore/8.0.25": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "8.0.25",
@@ -1434,6 +1459,10 @@
       },
       "Microsoft.Extensions.Hosting.Abstractions/8.0.1": {
         "dependencies": {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
           "Microsoft.Extensions.Diagnostics.Abstractions": "8.0.1",
@@ -1449,6 +1478,11 @@
       },
       "Microsoft.Extensions.Identity.Core/8.0.25": {
         "dependencies": {
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
           "Microsoft.AspNetCore.Cryptography.KeyDerivation": "8.0.25",
           "Microsoft.Extensions.Logging": "8.0.1",
           "Microsoft.Extensions.Options": "8.0.2"
@@ -1530,6 +1564,10 @@
           }
         }
       },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "Microsoft.Identity.Client/4.61.3": {
         "dependencies": {
           "Microsoft.IdentityModel.Abstractions": "6.35.0",
@@ -1544,6 +1582,13 @@
       },
       "Microsoft.Identity.Client.Extensions.Msal/4.61.3": {
         "dependencies": {
+<<<<<<< HEAD
+=======
+=======
+      "Microsoft.Identity.Client.Extensions.Msal/4.61.3": {
+        "dependencies": {
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
           "Microsoft.Identity.Client": "4.61.3",
           "System.Security.Cryptography.ProtectedData": "8.0.0"
         },
@@ -1566,7 +1611,15 @@
         "dependencies": {
           "Microsoft.IdentityModel.Tokens": "6.35.0",
           "System.Text.Encoding": "4.3.0",
+<<<<<<< HEAD
           "System.Text.Encodings.Web": "8.0.0",
+=======
+<<<<<<< HEAD
+          "System.Text.Encodings.Web": "8.0.0",
+=======
+          "System.Text.Encodings.Web": "6.0.1",
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
           "System.Text.Json": "8.0.6"
         },
         "runtime": {
@@ -1864,7 +1917,14 @@
           }
         }
       },
+<<<<<<< HEAD
       "System.Buffers/4.6.0": {},
+=======
+<<<<<<< HEAD
+      "System.Buffers/4.6.0": {},
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "System.ClientModel/1.0.0": {
         "dependencies": {
           "System.Memory.Data": "1.0.2",
@@ -2509,6 +2569,10 @@
     "Microsoft.AspNetCore.Authentication.Core/2.3.0": {
       "type": "package",
       "serviceable": true,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "sha512": "sha512-gnLnKGawBjqBnU9fEuel3VcYAARkjyONAliaGDfMc8o8HBtfh+HrOPEoR8Xx4b2RnMb7uxdBDOvEAC7sul79ig==",
       "path": "microsoft.aspnetcore.authentication.core/2.3.0",
       "hashPath": "microsoft.aspnetcore.authentication.core.2.3.0.nupkg.sha512"
@@ -2600,6 +2664,11 @@
     "Microsoft.AspNetCore.Identity.UI/8.0.25": {
       "type": "package",
       "serviceable": true,
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "sha512": "sha512-v5dgyY2k7z7bjPMtOonEWs2mRabOmKW4+TQEiLEJgG6Z/tunI2lshHGJwViOpbiCb/eaf/oRhRvxW+KbVUfZKw==",
       "path": "microsoft.aspnetcore.identity.ui/8.0.25",
       "hashPath": "microsoft.aspnetcore.identity.ui.8.0.25.nupkg.sha512"
@@ -2870,6 +2939,10 @@
       "path": "microsoft.extensions.hosting.abstractions/8.0.1",
       "hashPath": "microsoft.extensions.hosting.abstractions.8.0.1.nupkg.sha512"
     },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
     "Microsoft.Extensions.Identity.Core/8.0.25": {
       "type": "package",
       "serviceable": true,
@@ -2880,6 +2953,14 @@
     "Microsoft.Extensions.Identity.Stores/8.0.25": {
       "type": "package",
       "serviceable": true,
+<<<<<<< HEAD
+=======
+=======
+    "Microsoft.Extensions.Identity.Stores/8.0.25": {
+      "type": "package",
+      "serviceable": true,
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
       "sha512": "sha512-fd+PN5+mEoL6o8/XEAek2nj4mS26UV+tKzko2fFoEG6dA54CpDnAUpNm37NBXhrjDISApNr5Zqr+0jZPoTCoyg==",
       "path": "microsoft.extensions.identity.stores/8.0.25",
       "hashPath": "microsoft.extensions.identity.stores.8.0.25.nupkg.sha512"
@@ -2926,6 +3007,10 @@
       "path": "microsoft.extensions.webencoders/8.0.11",
       "hashPath": "microsoft.extensions.webencoders.8.0.11.nupkg.sha512"
     },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
     "Microsoft.Identity.Client/4.61.3": {
       "type": "package",
       "serviceable": true,
@@ -2988,6 +3073,59 @@
       "sha512": "sha512-/M0wVg6tJUOHutWD3BMOUVZAioJVXe0tCpFiovzv0T9T12TBf4MnaHP0efO8TCr1a6O9RZgQeZ9Gdark8L9XdA==",
       "path": "microsoft.net.http.headers/2.3.0",
       "hashPath": "microsoft.net.http.headers.2.3.0.nupkg.sha512"
+<<<<<<< HEAD
+=======
+=======
+    "Microsoft.Identity.Client.Extensions.Msal/4.61.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PWnJcznrSGr25MN8ajlc2XIDW4zCFu0U6FkpaNLEWLgd1NgFCp5uDY3mqLDgM8zCN8hqj8yo5wHYfLB2HjcdGw==",
+      "path": "microsoft.identity.client.extensions.msal/4.61.3",
+      "hashPath": "microsoft.identity.client.extensions.msal.4.61.3.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Abstractions/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xuR8E4Rd96M41CnUSCiOJ2DBh+z+zQSmyrYHdYhD6K4fXBcQGVnRCFQ0efROUYpP+p0zC1BLKr0JRpVuujTZSg==",
+      "path": "microsoft.identitymodel.abstractions/6.35.0",
+      "hashPath": "microsoft.identitymodel.abstractions.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.JsonWebTokens/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9wxai3hKgZUb4/NjdRKfQd0QJvtXKDlvmGMYACbEC8DFaicMFCFhQFZq9ZET1kJLwZahf2lfY5Gtcpsx8zYzbg==",
+      "path": "microsoft.identitymodel.jsonwebtokens/6.35.0",
+      "hashPath": "microsoft.identitymodel.jsonwebtokens.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Logging/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jePrSfGAmqT81JDCNSY+fxVWoGuJKt9e6eJ+vT7+quVS55nWl//jGjUQn4eFtVKt4rt5dXaleZdHRB9J9AJZ7Q==",
+      "path": "microsoft.identitymodel.logging/6.35.0",
+      "hashPath": "microsoft.identitymodel.logging.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BPQhlDzdFvv1PzaUxNSk+VEPwezlDEVADIKmyxubw7IiELK18uJ06RQ9QKKkds30XI+gDu9n8j24XQ8w7fjWcg==",
+      "path": "microsoft.identitymodel.protocols/6.35.0",
+      "hashPath": "microsoft.identitymodel.protocols.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols.OpenIdConnect/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LMtVqnECCCdSmyFoCOxIE5tXQqkOLrvGrL7OxHg41DIm1bpWtaCdGyVcTAfOQpJXvzND9zUKIN/lhngPkYR8vg==",
+      "path": "microsoft.identitymodel.protocols.openidconnect/6.35.0",
+      "hashPath": "microsoft.identitymodel.protocols.openidconnect.6.35.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Tokens/6.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RN7lvp7s3Boucg1NaNAbqDbxtlLj5Qeb+4uSS1TeK5FSBVM40P4DKaTKChT43sHyKfh7V0zkrMph6DdHvyA4bg==",
+      "path": "microsoft.identitymodel.tokens/6.35.0",
+      "hashPath": "microsoft.identitymodel.tokens.6.35.0.nupkg.sha512"
+>>>>>>> 79d592fa39b10bdc6de0d6879a1bc858cd685a2b
+>>>>>>> 03afa597175e6285e9a92892b510e0cacce37351
     },
     "Microsoft.NET.StringTools/17.11.48": {
       "type": "package",
