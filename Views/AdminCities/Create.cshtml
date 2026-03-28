@@ -1,0 +1,31 @@
+﻿@model Bus_Booking_System.Models.City
+@{
+    ViewData["Title"] = "Add New City";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card border-0 shadow-sm rounded-3" style="max-width: 500px;">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+        <h4 class="fw-bold text-muted">City Details</h4>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Create">
+            <div class="mb-4">
+                <label asp-for="Name" class="form-label fw-bold">City Name</label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Cairo, Alexandria..." />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-light">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save City</button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

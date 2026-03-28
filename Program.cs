@@ -27,6 +27,11 @@ namespace Bus_Booking_System
             // Repositories
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<ITripRepository, TripRepository>();
+            builder.Services.AddScoped<IBusRepository, BusRepository>();
+            builder.Services.AddScoped<ICityRepository, CityRepository>();
+            builder.Services.AddScoped<IRouteRepository, RouteRepository>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddSignalR();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
             // SignalR
@@ -79,6 +84,8 @@ namespace Bus_Booking_System
             // MVC routes
             app.MapControllerRoute(
                 name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapHub<DashboardHub>("/dashboardHub");
                 pattern: "{controller=Trip}/{action=Index}/{id?}");
 
             await app.RunAsync();

@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Bus_Booking_System.Models.Booking>
+@{
+    ViewData["Title"] = "Manage Bookings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-muted"><i class="bi bi-ticket-detailed me-2"></i>Passenger Bookings</h3>
+</div>
+
+@if (TempData["SuccessMsg"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMsg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Booking ID</th>
+                    <th>Passenger Info</th>
+                    <th>Trip Details</th>
+                    <th>Booking Info</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">#BK-@item.Id.ToString("D4")</td>
+
+                        <td>
+                            <div class="fw-bold">@item.User?.UserName</div>
+                            <small class="text-muted"><i class="bi bi-person"></i> User ID: @item.UserId</small>
+                        </td>
+
+                        <td>
+                            <div class="fw-bold text-dark">
+                                @item.Trip?.BusRoute?.OriginCity?.Name <i class="bi bi-arrow-right mx-1"></i> @item.Trip?.BusRoute?.DestinationCity?.Name
+                            </div>
+                            <small class="text-muted">@item.Trip?.TravelDate.ToString("MMM dd, yyyy")</small>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-dark mb-1 text-wrap text-start" style="max-width: 150px;">
+                                <i class="bi bi-ui-checks-grid me-1"></i> Seats:
+                                @if (item.SeatReservations != null && item.SeatReservations.Any())
+                                {
+                                    
+                                    @string.Join(", ", item.SeatReservations.Select(sr => sr.Seat?.SeatNum ?? sr.SeatId.ToString()))
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </span><br />
+                            <span class="fw-bold text-success">Total: $@item.TotalPrice</span>
+                        </td>
+
+                        <td>
+                            @if (item.Status == Bus_Booking_System.Models.BookingStatus.Confirmed)
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success">Confirmed</span>
+                            }
+                            else if (item.Status == Bus_Booking_System.Models.BookingStatus.Pending)
+                            {
+                                <span class="badge bg-warning-subtle text-warning border border-warning">Pending</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger-subtle text-danger border border-danger">Cancelled</span>
+                            }
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit Status">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to completely cancel and delete this booking?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Booking">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No bookings found in the system.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .bg-success-subtle {
+        background-color: #d1e7dd;
+    }
+
+    .bg-danger-subtle {
+        background-color: #f8d7da;
+    }
+
+    .bg-warning-subtle {
+        background-color: #fff3cd;
+        color: #856404 !important;
+    }
+</style>

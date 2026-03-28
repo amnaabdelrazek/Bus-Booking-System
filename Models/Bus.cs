@@ -6,12 +6,12 @@ namespace Bus_Booking_System.Models
     public class Bus : BaseEntity
     {
         [Display(Name = "Bus Number")]
-        public string BusNum { get; set; }
+        public string? BusNum { get; set; }
 
         [Display(Name = "Total Seats")]
         public int TotalSeats { get; set; }
 
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         public List<Seat> Seats { get; set; } = new List<Seat>();
         public List<Trip> Trips { get; set; } = new List<Trip>();
