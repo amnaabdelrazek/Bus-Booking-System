@@ -1,55 +1,68 @@
 ﻿@using Bus_Booking_System.ViewModel
 @model List<TripResultViewModel>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Search Results";
+}
 
-<div class="container mt-5">
-
-    <h2>Available Trips</h2>
-
-    <a asp-action="Index" class="btn btn-secondary mb-3">Back</a>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: var(--dark-blue);">Available Trips</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Back</a>
+    </div>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-warning">No trips found 😢</div>
+        <div class="alert alert-info text-center py-5 rounded-4 shadow-sm border-0" style="background-color: white;">
+            <i class="bi bi-emoji-frown display-4 text-muted d-block mb-3"></i>
+            <h5 class="text-muted">No trips found for this route on the selected date.</h5>
+            <a asp-action="Index" class="btn btn-primary-custom mt-3 text-white">Try another search</a>
+        </div>
     }
     else
     {
         <div class="row">
-
             @foreach (var trip in Model)
             {
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card custom-card h-100 p-0 overflow-hidden">
+                        <div class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
+                            <span class="badge bg-dark text-white rounded-pill px-3 py-2">Bus: @trip.BusNumber</span>
+                            <span class="text-primary fw-bold fs-5">@trip.Price EGP</span>
+                        </div>
 
-                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bold mb-0 text-dark">@trip.From</h5>
+                                    <small class="text-muted">@trip.DepartureTime.ToString("hh:mm tt")</small>
+                                </div>
+                                <div class="text-center px-2 flex-grow-1">
+                                    <div style="border-top: 2px dashed #ccc; position: relative;">
+                                        <i class="bi bi-bus-front-fill text-primary" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: white; padding: 0 5px;"></i>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <h5 class="fw-bold mb-0 text-dark">@trip.To</h5>
+                                    <small class="text-muted">@trip.ArrivalTime.ToString("hh:mm tt")</small>
+                                </div>
+                            </div>
 
-                        <div class="card-body">
-
-                            <h5>@trip.From → @trip.To</h5>
-
-                            <p>🕒 @trip.DepartureTime.ToString("hh:mm tt")</p>
-                            <p>⏱ Arrival: @trip.ArrivalTime.ToString("hh:mm tt")</p>
-
-                            <p>💰 Price: @trip.Price EGP</p>
-                            <p>💺 Seats: @trip.AvailableSeats</p>
-
-                            <p>🚌 Bus: @trip.BusNumber</p>
+                            <div class="d-flex align-items-center mb-4 text-muted small">
+                                <i class="bi bi-person-check-fill me-2 text-success"></i>
+                                Available Seats: <strong class="ms-1 text-dark">@trip.AvailableSeats</strong>
+                            </div>
 
                             <a asp-controller="Booking"
                                asp-action="SelectSeats"
                                asp-route-tripId="@trip.TripId"
-                               class="btn btn-primary w-100">
-                                Book Now
+                               class="btn btn-primary-custom w-100 text-white">
+                                Select Seats
                             </a>
-
                         </div>
-
                     </div>
-
                 </div>
             }
-
         </div>
     }
-
 </div>

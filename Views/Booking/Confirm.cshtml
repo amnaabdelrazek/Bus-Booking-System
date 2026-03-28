@@ -1,30 +1,44 @@
 ﻿@model Bus_Booking_System.ViewModel.ConfirmBookingVM
 
-<div class="container my-5">
-    <div class="card shadow border-0 mx-auto" style="max-width: 500px; border-radius: 20px;">
-        <div class="card-body p-4">
-            <h4 class="fw-bold mb-4">Confirm Your Booking</h4>
-            <div class="bg-light p-3 rounded mb-3">
-                <p class="mb-1 text-muted">Selected Seats</p>
-                <div class="h5 fw-bold">@string.Join(", ", Model.SeatIds)</div>
-            </div>
-            <div class="d-flex justify-content-between mb-4">
-                <span>Total Amount:</span>
-                <span class="h4 fw-bold text-primary">$@Model.TotalPrice</span>
-            </div>
+@{
+    ViewData["Title"] = "Confirm Booking";
+}
 
-            <form asp-action="Confirm" method="post">
-                <input type="hidden" asp-for="TripId" />
-                <input type="hidden" asp-for="PricePerSeat" />
-                @for (int i = 0; i < Model.SeatIds.Count; i++)
-                {
-                    <input type="hidden" name="SeatIds[@i]" value="@Model.SeatIds[i]" />
-                }
-                <button type="submit" class="btn btn-dark w-100 py-3 fw-bold" style="border-radius:12px;">
-                    Confirm & Proceed &rarr;
-                </button>
-            </form>
-            <a href="javascript:history.back()" class="btn btn-link w-100 mt-2 text-muted text-decoration-none">Back to seats</a>
+<div class="container my-5 d-flex justify-content-center">
+    <div class="custom-card w-100" style="max-width: 500px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+            <h3 class="fw-bold mt-2" style="color: var(--dark-blue);">Confirm Your Booking</h3>
+            <p class="text-muted small">Please review your selected seats before proceeding.</p>
         </div>
+
+        <div class="bg-light p-4 rounded-3 mb-4 text-center">
+            <p class="mb-2 text-muted fw-bold">Selected Seats</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                @foreach (var seat in Model.SeatIds)
+                {
+                    <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">Seat @seat</span>
+                }
+            </div>
+            <hr class="text-muted">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-muted fw-bold">Total Amount:</span>
+                <span class="h3 fw-bold mb-0" style="color: var(--primary-blue);">@Model.TotalPrice EGP</span>
+            </div>
+        </div>
+
+        <form asp-action="Confirm" method="post">
+            <input type="hidden" asp-for="TripId" />
+            <input type="hidden" asp-for="PricePerSeat" />
+            @for (int i = 0; i < Model.SeatIds.Count; i++)
+            {
+                <input type="hidden" name="SeatIds[@i]" value="@Model.SeatIds[i]" />
+            }
+
+            <button type="submit" class="btn btn-dark-custom w-100 py-3 fs-5">
+                Confirm & Proceed <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+            <a href="javascript:history.back()" class="btn btn-link w-100 mt-2 text-muted text-decoration-none">Cancel</a>
+        </form>
     </div>
 </div>

@@ -1,174 +1,218 @@
 ﻿@model Bus_Booking_System.ViewModel.RegisterVM
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Create Account";
 }
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
 <style>
     body {
-        background-color: #f5f7fa;
+        background-color: var(--light-blue);
     }
 
     .register-wrapper {
-        min-height: 90vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 40px 0;
     }
 
     .register-card {
         width: 100%;
-        max-width: 450px;
+        max-width: 500px;
         background: white;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(13, 43, 77, 0.1);
     }
 
-    .logo {
+    .logo-area {
         text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        color: #0d2b4d;
+        margin-bottom: 30px;
     }
 
-    .subtitle {
-        text-align: center;
-        color: gray;
-        margin-bottom: 20px;
+    .logo-text {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--dark-blue);
+        text-decoration: none;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-blue);
+        font-size: 0.9rem;
     }
 
     .input-group {
-        border: 1px solid #ddd;
         border-radius: 10px;
         overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
     }
 
+        .input-group:focus-within {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.1);
+        }
+
     .input-group-text {
-        background: transparent;
-        border-right: none;
+        background: #f8f9fa;
+        border: none;
+        color: #6c757d;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     .form-control {
-        border-left: none;
+        border: none;
+        padding: 12px;
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+    .strength-meter {
+        height: 6px;
+        background-color: #eee;
+        border-radius: 3px;
+        margin-top: 8px;
+        overflow: hidden;
+    }
+
+    #strengthBar {
+        height: 100%;
+        width: 0%;
+        transition: all 0.4s ease;
     }
 
     .btn-register {
-        width: 100%;
-        background-color: #0d2b4d;
+        background-color: var(--primary-blue);
         color: white;
-        border-radius: 10px;
-        padding: 10px;
+        border: none;
+        padding: 14px;
+        border-radius: 12px;
         font-weight: bold;
+        transition: all 0.3s ease;
     }
 
-    .btn-register:hover {
-        background-color: #0b2440;
+        .btn-register:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .login-link {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 600;
     }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
 </style>
 
 <div class="register-wrapper">
     <div class="register-card">
 
-        <!-- Logo -->
-        <div class="logo">🚌 BusBooking</div>
-        <h4 class="text-center mt-3">Create Account</h4>
-        <p class="subtitle">Join BusBooking today</p>
+        <div class="logo-area">
+            <a href="/" class="logo-text"><i class="bi bi-bus-front-fill me-2 text-primary"></i>BusBooking</a>
+            <h4 class="fw-bold mt-3 mb-1">Create Account</h4>
+            <p class="text-muted small">Join us to start booking your trips easily</p>
+        </div>
 
         <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
-            <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-            <!-- Full Name -->
-            <div class="mb-3">
-                <label asp-for="Fullname"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-user"></i></span>
-                    <input asp-for="Fullname" class="form-control" placeholder="John Doe" />
-                </div>
-                <span asp-validation-for="Fullname" class="text-danger"></span>
-            </div>
-            <!-- Full Name -->
-            <div class="mb-3">
-                <label asp-for="UserName"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-user"></i></span>
-                    <input asp-for="UserName" class="form-control" placeholder="John Doe" />
-                </div>
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label asp-for="Email"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                    <input asp-for="Email" class="form-control" placeholder="you@example.com" />
-                </div>
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <!-- Phone -->
-            <div class="mb-3">
-                <label asp-for="Phone"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
-                    <input asp-for="Phone" id="Phone" class="form-control" placeholder="01XXXXXXXXX" />
-                </div>
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-                <label asp-for="Password"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                    <input asp-for="Password" type="password" id="passwordInput" class="form-control" placeholder="••••••••" />
-                    <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
-                        <i class="fa fa-eye" id="eyeIcon"></i>
-                    </span>
-                </div>
-
-                <!-- Password Strength -->
-                <div class="mt-2">
-                    <small id="strengthText"></small>
-                    <div style="height:5px; border-radius:5px; background:#eee;">
-                        <div id="strengthBar" style="height:5px; width:0%; border-radius:5px;"></div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Fullname" class="form-label">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-user-tag"></i></span>
+                        <input asp-for="Fullname" class="form-control" placeholder="Enter your full name" />
                     </div>
+                    <span asp-validation-for="Fullname" class="text-danger small"></span>
                 </div>
 
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword"></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                    <input asp-for="ConfirmPassword" type="password" id="confirmPasswordInput" class="form-control" placeholder="••••••••" />
-                    <span class="input-group-text" onclick="toggleConfirmPassword()" style="cursor:pointer;">
-                        <i class="fa fa-eye" id="confirmEyeIcon"></i>
-                    </span>
+                <div class="col-md-12 mb-3">
+                    <label asp-for="UserName" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input asp-for="UserName" class="form-control" placeholder="Choose a username" />
+                    </div>
+                    <span asp-validation-for="UserName" class="text-danger small"></span>
                 </div>
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Phone" class="form-label">Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                        <input asp-for="Phone" id="Phone" class="form-control" placeholder="01XXXXXXXXX" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <input asp-for="Password" type="password" id="passwordInput" class="form-control" placeholder="••••••••" />
+                        <span class="input-group-text bg-white border-0" onclick="togglePassword('passwordInput', 'eyeIcon')" style="cursor:pointer;">
+                            <i class="fa fa-eye" id="eyeIcon"></i>
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted" style="font-size: 0.75rem;">Password Strength:</small>
+                        <small id="strengthText" class="fw-bold" style="font-size: 0.75rem;"></small>
+                    </div>
+                    <div class="strength-meter">
+                        <div id="strengthBar"></div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-12 mb-4">
+                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-shield-check"></i></span>
+                        <input asp-for="ConfirmPassword" type="password" id="confirmPasswordInput" class="form-control" placeholder="••••••••" />
+                        <span class="input-group-text bg-white border-0" onclick="togglePassword('confirmPasswordInput', 'confirmEyeIcon')" style="cursor:pointer;">
+                            <i class="fa fa-eye" id="confirmEyeIcon"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
             </div>
 
-            <!-- Terms -->
-            <div class="mb-3">
-                <input type="checkbox" required />
-                <label>I agree to the Terms of Service and Privacy Policy</label>
+            <div class="mb-4">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="termsCheck" required />
+                    <label class="form-check-label small text-muted" for="termsCheck">
+                        I agree to the <a href="#" class="login-link">Terms</a> and <a href="#" class="login-link">Privacy Policy</a>
+                    </label>
+                </div>
             </div>
 
-            <!-- Button -->
-            <button type="submit" class="btn btn-register">
-                Create Account
+            <button type="submit" class="btn btn-register w-100 mb-3 shadow-sm">
+                <i class="bi bi-person-plus-fill me-2"></i>Create My Account
             </button>
 
-            <div class="text-center mt-3">
-                Already have an account?
-                <a asp-action="Login">Sign in</a>
+            <div class="text-center small mt-2">
+                Already have an account? <a asp-action="Login" class="login-link">Sign in here</a>
             </div>
 
         </form>
@@ -176,95 +220,70 @@
 </div>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 
-        <script>
-            var passwordInput = document.getElementById("passwordInput");
-            var confirmPasswordInput = document.getElementById("confirmPasswordInput");
-            var phoneInput = document.getElementById("Phone");
+    <script>
+        const passwordInput = document.getElementById("passwordInput");
+        const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+        const phoneInput = document.getElementById("Phone");
 
-            // Toggle Password
-            function togglePassword() {
-                var icon = document.getElementById("eyeIcon");
-
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    icon.classList.replace("fa-eye", "fa-eye-slash");
-                } else {
-                    passwordInput.type = "password";
-                    icon.classList.replace("fa-eye-slash", "fa-eye");
-                }
+        // Unified Toggle Password Function
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
             }
+        }
 
-            function toggleConfirmPassword() {
-                var icon = document.getElementById("confirmEyeIcon");
+        // Password Strength Real-time Logic
+        passwordInput.addEventListener("input", function () {
+            const val = passwordInput.value;
+            let strength = 0;
+            if (val.length >= 6) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[^A-Za-z0-9]/.test(val)) strength++;
 
-                if (confirmPasswordInput.type === "password") {
-                    confirmPasswordInput.type = "text";
-                    icon.classList.replace("fa-eye", "fa-eye-slash");
-                } else {
-                    confirmPasswordInput.type = "password";
-                    icon.classList.replace("fa-eye-slash", "fa-eye");
-                }
+            const bar = document.getElementById("strengthBar");
+            const text = document.getElementById("strengthText");
+
+            const levels = [
+                { width: "5%", color: "#eee", label: "" },
+                { width: "25%", color: "#dc3545", label: "Weak" },
+                { width: "50%", color: "#ffc107", label: "Fair" },
+                { width: "75%", color: "#0d6efd", label: "Good" },
+                { width: "100%", color: "#198754", label: "Strong" }
+            ];
+
+            const current = levels[strength];
+            bar.style.width = current.width;
+            bar.style.backgroundColor = current.color;
+            text.innerText = current.label;
+            text.style.color = current.color;
+        });
+
+        // Egyptian Phone Validation Visual Feedback
+        phoneInput.addEventListener("input", function () {
+            const regex = /^01[0-2,5]{1}[0-9]{8}$/;
+            const group = phoneInput.closest('.input-group');
+            if (phoneInput.value.length > 0) {
+                group.style.borderColor = regex.test(phoneInput.value) ? "#198754" : "#dc3545";
+            } else {
+                group.style.borderColor = "#dee2e6";
             }
+        });
 
-            // Password Strength
-            passwordInput.addEventListener("input", function () {
-                var value = passwordInput.value;
-                var strength = 0;
-
-                if (value.length >= 6) strength++;
-                if (/[A-Z]/.test(value)) strength++;
-                if (/[0-9]/.test(value)) strength++;
-                if (/[^A-Za-z0-9]/.test(value)) strength++;
-
-                var bar = document.getElementById("strengthBar");
-                var text = document.getElementById("strengthText");
-
-                switch (strength) {
-                    case 0:
-                    case 1:
-                        bar.style.width = "25%";
-                        bar.style.background = "red";
-                        text.innerText = "Weak";
-                        break;
-                    case 2:
-                        bar.style.width = "50%";
-                        bar.style.background = "orange";
-                        text.innerText = "Medium";
-                        break;
-                    case 3:
-                        bar.style.width = "75%";
-                        bar.style.background = "blue";
-                        text.innerText = "Good";
-                        break;
-                    case 4:
-                        bar.style.width = "100%";
-                        bar.style.background = "green";
-                        text.innerText = "Strong";
-                        break;
-                }
-            });
-
-            // Confirm Password Validation
-            confirmPasswordInput.addEventListener("input", function () {
-                if (confirmPasswordInput.value !== passwordInput.value) {
-                    confirmPasswordInput.style.borderColor = "red";
-                } else {
-                    confirmPasswordInput.style.borderColor = "green";
-                }
-            });
-
-            // Phone Validation (Egypt)
-            phoneInput.addEventListener("input", function () {
-                var phone = phoneInput.value;
-                var regex = /^01[0-2,5]{1}[0-9]{8}$/;
-
-                if (!regex.test(phone)) {
-                    phoneInput.style.borderColor = "red";
-                } else {
-                    phoneInput.style.borderColor = "green";
-                }
-            });
-        </script>
+        // Real-time Confirm Password Matching
+        confirmPasswordInput.addEventListener("input", function () {
+            const group = confirmPasswordInput.closest('.input-group');
+            if (confirmPasswordInput.value.length > 0) {
+                group.style.borderColor = (confirmPasswordInput.value === passwordInput.value) ? "#198754" : "#dc3545";
+            }
+        });
+    </script>
 }
