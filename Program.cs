@@ -1,4 +1,5 @@
 using Bus_Booking_System.Data;
+using Bus_Booking_System.Hubs;
 using Bus_Booking_System.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,10 @@ namespace Bus_Booking_System
                 .AddDefaultTokenProviders();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<ITripRepository, TripRepository>();
-
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddSignalR();
             var app = builder.Build();
+            app.MapHub<BookingHub>("/bookingHub");
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider

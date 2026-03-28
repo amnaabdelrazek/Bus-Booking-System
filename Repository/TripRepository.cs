@@ -50,6 +50,7 @@ namespace Bus_Booking_System.Repository
                    .Include(t=>t.BusRoute)
                        .ThenInclude(r=>r.DestinationCity)
                     .Include(t => t.Bookings)
+                    .OrderByDescending(t => t.Id)
                    .ToList();
         }
 
