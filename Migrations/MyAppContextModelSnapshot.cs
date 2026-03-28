@@ -681,6 +681,9 @@ namespace Bus_Booking_System.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BookingId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -693,6 +696,9 @@ namespace Bus_Booking_System.Migrations
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SeatId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -703,7 +709,11 @@ namespace Bus_Booking_System.Migrations
 
                     b.HasIndex("BookingId");
 
+                    b.HasIndex("BookingId1");
+
                     b.HasIndex("SeatId");
+
+                    b.HasIndex("SeatId1");
 
                     b.HasIndex("TripId");
 
@@ -976,13 +986,13 @@ namespace Bus_Booking_System.Migrations
                     b.HasOne("Bus_Booking_System.Models.City", "DestinationCity")
                         .WithMany("RoutesAsDestination")
                         .HasForeignKey("DestinationCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Bus_Booking_System.Models.City", "OriginCity")
                         .WithMany("RoutesAsOrigin")
                         .HasForeignKey("OriginCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("DestinationCity");
@@ -1004,21 +1014,29 @@ namespace Bus_Booking_System.Migrations
             modelBuilder.Entity("Bus_Booking_System.Models.SeatReservation", b =>
                 {
                     b.HasOne("Bus_Booking_System.Models.Booking", "Booking")
-                        .WithMany("SeatReservations")
+                        .WithMany()
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bus_Booking_System.Models.Seat", "Seat")
+                    b.HasOne("Bus_Booking_System.Models.Booking", null)
                         .WithMany("SeatReservations")
+                        .HasForeignKey("BookingId1");
+
+                    b.HasOne("Bus_Booking_System.Models.Seat", "Seat")
+                        .WithMany()
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Bus_Booking_System.Models.Seat", null)
+                        .WithMany("SeatReservations")
+                        .HasForeignKey("SeatId1");
 
                     b.HasOne("Bus_Booking_System.Models.Trip", "Trip")
                         .WithMany()
                         .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Booking");

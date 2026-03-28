@@ -40,55 +40,7 @@ namespace Bus_Booking_System.Data
             modelBuilder.Entity<BusRoute>()
                 .Property(r => r.Price)
                 .HasPrecision(10, 2);
-
-            // =========================
-            // Cities
-            // =========================
-            modelBuilder.Entity<City>().HasData(
-                new City { Id = 1, Name = "Cairo", IsDeleted = false, CreatedAt = new DateTime(2024, 1, 1) },
-                new City { Id = 2, Name = "Alexandria", IsDeleted = false, CreatedAt = new DateTime(2024, 1, 1) }
-            );
-
-            // =========================
-            // Buses
-            // =========================
-            modelBuilder.Entity<Bus>().HasData(
-                new Bus { Id = 1, BusNum = "BUS-001", TotalSeats = 40, Type = "VIP", IsDeleted = false, CreatedAt = new DateTime(2024, 1, 1) }
-            );
-
-            // =========================
-            // Seats
-            // =========================
-            var seats = new List<Seat>();
-            for (int i = 1; i <= 40; i++)
-            {
-                seats.Add(new Seat
-                {
-                    Id = i,
-                    BusId = 1,
-                    SeatNum = i.ToString(),
-                    IsDeleted = false,
-                    CreatedAt = new DateTime(2024, 1, 1)
-                });
-            }
-            modelBuilder.Entity<Seat>().HasData(seats);
-
-            // =========================
-            // BusRoutes
-            // =========================
-            modelBuilder.Entity<BusRoute>().HasData(
-                new BusRoute
-                {
-                    Id = 1,
-                    OriginCityId = 1,
-                    DestinationCityId = 2,
-                    Distance = 220,
-                    TimeNeeded = new TimeSpan(3, 0, 0),
-                    Price = 150,
-                    IsDeleted = false,
-                    CreatedAt = new DateTime(2024, 1, 1)
-                }
-            );
+        }
 
             // =========================
             // Trips
