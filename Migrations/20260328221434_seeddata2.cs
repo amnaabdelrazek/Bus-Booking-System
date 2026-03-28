@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bus_Booking_System.Migrations
 {
     /// <inheritdoc />
+
     public partial class seeddata2 : Migration
+
+  
+
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

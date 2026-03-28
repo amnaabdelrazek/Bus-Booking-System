@@ -12,8 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Booking_System.Migrations
 {
     [DbContext(typeof(MyAppContext))]
-    [Migration("20260328222058_seeddata")]
+
+    [Migration("20260328211353_seeddata")]
     partial class seeddata
+
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
