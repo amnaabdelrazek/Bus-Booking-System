@@ -1225,5 +1225,8 @@ D:\ITI\MVC\Bus Project\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\ITI\MVC\Bus Project\obj\Debug\net8.0\Bus Book.A8FE3E23.Up2Date
 D:\ITI\MVC\Bus Project\obj\Debug\net8.0\Bus Booking System.genruntimeconfig.cache
 D:\ITI\MVC\Bus Project\obj\Debug\net8.0\ref\Bus Booking System.dll
+<<<<<<< HEAD
 C:\ITI Matrial\MVC\Bus Booking System\Bus Booking System\bin\Debug\net8.0\libman.json
 C:\ITI Matrial\MVC\Bus Booking System\Bus Booking System\obj\Debug\net8.0\Bus Booking System.sourcelink.json
+=======
+>>>>>>> parent of b6b85fe (#merg)
