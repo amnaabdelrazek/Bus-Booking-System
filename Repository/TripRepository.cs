@@ -1,4 +1,5 @@
 ﻿
+
 namespace Bus_Booking_System.Repository
 {
     public class TripRepository : ITripRepository
@@ -67,5 +68,31 @@ namespace Bus_Booking_System.Repository
                         .ThenInclude(b => b.SeatReservations)
                    .FirstOrDefault(t => t.Id == id);
         }
-    }
+
+		public List<Trip> SearchTrips(int departureCityId, int arrivalCityId, DateTime TravelDate)
+		{
+			var trips = appContext.Trips
+                   .Include(t => t.Bus)
+                   .Include(t => t.BusRoute)
+                        .ThenInclude(r => r.OriginCity)
+                   .Include(t => t.BusRoute)
+                        .ThenInclude(r => r.DestinationCity)
+                   .Where(t => t.BusRoute.OriginCityId == departureCityId &&
+                               t.BusRoute.DestinationCityId == arrivalCityId &&
+                               t.TravelDate.Date == TravelDate.Date)
+                   .ToList();
+            return trips;
+		}
+
+		public IQueryable<Trip> GetAllQueryable()
+		{
+			return appContext.Trips
+                   .Include(t => t.Bus)
+                   .Include(t => t.BusRoute)
+                        .ThenInclude(r => r.OriginCity)
+                   .Include(t => t.BusRoute)
+                        .ThenInclude(r => r.DestinationCity)
+                   .AsNoTracking();
+		}
+	}
 }

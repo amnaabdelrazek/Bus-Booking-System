@@ -4,5 +4,6 @@
     {
         List<Trip> GetTripsWithDetails();
         Trip GetTripWithBooking(int id);
-    }
+        List<Trip> SearchTrips(int departureCityId, int arrivalCityId, DateTime TravelDate);
+	}
 }
