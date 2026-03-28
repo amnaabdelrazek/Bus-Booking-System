@@ -12,54 +12,76 @@ namespace Bus_Booking_System
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add services to the container
             builder.Services.AddControllersWithViews();
+
+            // DbContext
             builder.Services.AddDbContext<MyAppContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
                 .AddEntityFrameworkStores<MyAppContext>()
                 .AddDefaultTokenProviders();
+
+            // Repositories
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<ITripRepository, TripRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+            // SignalR
             builder.Services.AddSignalR();
+
             var app = builder.Build();
-            app.MapHub<BookingHub>("/bookingHub");
+
+            // Seed roles and admin user
             using (var scope = app.Services.CreateScope())
             {
-                var roleManager = scope.ServiceProvider
-                    .GetRequiredService<RoleManager<IdentityRole<int>>>();
+                var services = scope.ServiceProvider;
 
+                // RoleManager
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
                 if (!await roleManager.RoleExistsAsync("Admin"))
-                {
                     await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
-                }
-
                 if (!await roleManager.RoleExistsAsync("User"))
-                {
                     await roleManager.CreateAsync(new IdentityRole<int>("User"));
+
+                // UserManager
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                if (await userManager.FindByEmailAsync("admin@test.com") == null)
+                {
+                    var admin = new ApplicationUser
+                    {
+                        UserName = "admin@test.com",
+                        Email = "admin@test.com"
+                    };
+
+                    await userManager.CreateAsync(admin, "Admin123!");
+                    await userManager.AddToRoleAsync(admin, "Admin");
                 }
             }
 
-
-            // Configure the HTTP request pipeline.
+            // Configure HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseStaticFiles();
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // SignalR hub
+            app.MapHub<BookingHub>("/bookingHub");
 
+            // MVC routes
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Trip}/{action=Index}/{id?}");
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }
