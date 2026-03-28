@@ -14,7 +14,7 @@ namespace Bus_Booking_System.Repository
             return appContext.Trips.ToList();
         }
 
-        public Trip GetById(int id)
+        public Trip? GetById(int id)
         {
             return appContext.Trips
                    .Where(t => t.Id == id)
