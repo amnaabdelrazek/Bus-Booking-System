@@ -16,6 +16,8 @@ namespace Bus_Booking_System.Migrations
     [Migration("20260328221434_seeddata2")]
     partial class seeddata2
 
+
+
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
