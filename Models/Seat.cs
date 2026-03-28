@@ -8,7 +8,7 @@ namespace Bus_Booking_System.Models
         public int BusId { get; set; }
 
         [Display(Name = "Seat Number")]
-        public string SeatNum { get; set; }
+        public string? SeatNum { get; set; }
 
         public Bus? Bus { get; set; }
         public List<SeatReservation> SeatReservations { get; set; } = new List<SeatReservation>();

@@ -5,7 +5,7 @@ namespace Bus_Booking_System.Models
 {
     public class City : BaseEntity
     {
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; } = null!;
 
         [InverseProperty(nameof(BusRoute.OriginCity))]
         public List<BusRoute> RoutesAsOrigin { get; set; } = new List<BusRoute>();

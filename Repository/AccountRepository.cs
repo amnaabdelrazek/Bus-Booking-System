@@ -58,7 +58,7 @@ namespace Bus_Booking_System.Repository
             if (!result.Succeeded) return false;
 
             var user = await _userManager.FindByNameAsync(model.UserName);
-
+            if (user == null) return false;
             // تسجيل الدخول مع Claims و RememberMe
             await LoginInternal(user, model.RememberMe);
 
