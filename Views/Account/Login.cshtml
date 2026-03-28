@@ -4,45 +4,168 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-<form asp-action="Login" method="post">
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
 
-    <div asp-validation-summary="All" class="text-danger"></div>
+    .login-wrapper {
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-    <div class="form-group">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" class="form-control" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
+    .login-card {
+        width: 100%;
+        max-width: 460px;
+        background: #fff;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+        color: #0d2b4d;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: gray;
+        margin-bottom: 20px;
+    }
+
+    .input-group-text {
+        background: transparent;
+        border-right: none;
+    }
+
+    .form-control {
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .input-group {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .btn-login {
+        width: 100%;
+        background-color: #0d2b4d;
+        color: white;
+        border-radius: 10px;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    .btn-login:hover {
+        background-color: #0b2440;
+    }
+
+    .extra {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- Logo -->
+        <div class="logo">
+            🚌 BusBooking
+        </div>
+
+        <h4 class="text-center mt-3">Welcome Back</h4>
+        <p class="subtitle">Sign in to your account</p>
+
+        <form asp-action="Login" method="post">
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label"></label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-envelope"></i>
+                    </span>
+                    <input asp-for="UserName" class="form-control" placeholder="username" />
+                </div>
+
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fa fa-lock"></i>
+                    </span>
+
+                    <input asp-for="Password" type="password" id="passwordInput"
+                           class="form-control" placeholder="••••••••" />
+
+                    <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
+                        <i class="fa fa-eye" id="eyeIcon"></i>
+                    </span>
+                </div>
+
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <!-- Remember -->
+            <div class="extra mb-3">
+                <div>
+                    <input asp-for="RememberMe" />
+                    <label asp-for="RememberMe"></label>
+                </div>
+
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <!-- Button -->
+            <button type="submit" class="btn btn-login">
+                Sign In
+            </button>
+
+            <div class="text-center mt-3">
+                Don't have an account?
+                <a asp-action="Register">Create one</a>
+            </div>
+
+        </form>
     </div>
-
-    <br />
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <br />
-
-    <div class="form-group">
-        <input asp-for="RememberMe" />
-        <label asp-for="RememberMe"></label>
-    </div>
-
-    <br />
-
-    <button type="submit" class="btn btn-success">
-        Login
-    </button>
-
-    <a asp-action="Register" class="btn btn-secondary">
-        Register
-    </a>
-
-</form>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
+
+        <script>
+            function togglePassword() {
+                var input = document.getElementById("passwordInput");
+                var icon = document.getElementById("eyeIcon");
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+                }
+            }
+        </script>
 }

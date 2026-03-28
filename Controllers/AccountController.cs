@@ -27,7 +27,7 @@ namespace Bus_Booking_System.Controllers
             var result = await _accountRepository.Register(model);
 
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Trip");
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -55,7 +55,7 @@ namespace Bus_Booking_System.Controllers
 
                 if (role == "Admin")
                     return RedirectToAction("Dashboard", "Admin"); // صفحة الادمن
-                return RedirectToAction("Index", "Home"); // صفحة المستخدم العادي
+                return RedirectToAction("Index", "Trip"); // صفحة المستخدم العادي
             }
 
             ModelState.AddModelError(string.Empty, "Invalid username or password.");
@@ -73,9 +73,6 @@ namespace Bus_Booking_System.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        public IActionResult test()
-        {
-            return View();
-        }
+       
     }
 }

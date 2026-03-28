@@ -26,6 +26,7 @@ namespace Bus_Booking_System.Repository
         {
             var user = new ApplicationUser
             {
+                FullName = model.Fullname,
                 UserName = model.UserName,
                 Email = model.Email,
                 PhoneNumber = model.Phone
