@@ -1,6 +1,7 @@
 ﻿using Bus_Booking_System.Data;
 using Bus_Booking_System.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Bus_Booking_System.Repository
 {
@@ -38,5 +39,12 @@ namespace Bus_Booking_System.Repository
         }
 
         public void Save() => _context.SaveChanges();
+
+        public IQueryable<BusRoute> GetAllQueryable()
+        {
+            return _context.BusRoutes
+               .Include(t => t.Trips)
+               .AsNoTracking();
+        }
     }
 }

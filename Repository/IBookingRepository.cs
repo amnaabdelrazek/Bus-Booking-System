@@ -2,9 +2,9 @@
 
 namespace Bus_Booking_System.Repository
 {
-    public interface IBookingRepository
     public interface IBookingRepository : IGenericRepository<Booking>
     {
+        List<Booking> GetAllWithDetails();
         Task addAsync(Booking booking);
 
         Task AddSeatReservationAsync(SeatReservation reservation);
@@ -18,6 +18,5 @@ namespace Bus_Booking_System.Repository
         Task<IEnumerable<Booking>> GetUserBookingsAsync(int userId);
 
         Task<bool> SaveChangesAsync();
-        List<Booking> GetAllWithDetails();
     }
 }
