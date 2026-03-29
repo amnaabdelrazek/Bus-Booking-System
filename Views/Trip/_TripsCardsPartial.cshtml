@@ -1,0 +1,119 @@
+@model Bus_Booking_System.ViewModel.TripIndexVM
+
+<input type="hidden" id="TripsCountValue" value="@Model.Trips.Count" />
+
+<div class="row g-4">
+    @if (!Model.Trips.Any())
+    {
+        <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm">
+            <img src="https://illustrations.popsy.co/gray/bus-stop.svg" style="width: 200px;" alt="No trips">
+            <h5 class="text-dark fw-bold mt-4">No trips match your filters</h5>
+            <p class="text-muted">Try adjusting your filters to find more options.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var trip in Model.Trips)
+        {
+            bool isCancelled = trip.Status == "Cancelled";
+            bool isCompleted = trip.Status == "Completed";
+            bool isOpen = trip.Status == "OpenForBooking";
+
+            string cardClass = isCancelled ? "trip-cancelled" : (isCompleted ? "trip-completed" : "");
+            string badgeClass = "bg-light text-muted";
+
+            if (trip.Status == "OpenForBooking")
+            {
+                badgeClass = "bg-success-subtle text-success border-success";
+            }
+            else if (trip.Status == "Completed")
+            {
+                badgeClass = "bg-primary-subtle text-primary border-primary";
+            }
+            else if (trip.Status == "Cancelled")
+            {
+                badgeClass = "bg-danger-subtle text-danger border-danger";
+            }
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm trip-card h-100 @cardClass" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="badge border rounded-pill px-3 py-2 fw-bold @badgeClass" style="font-size: 0.75rem;">
+                                @if (isOpen)
+                                {
+                                    <i class="bi bi-check2-circle me-1"></i>
+                                }
+                                @if (isCancelled)
+                                {
+                                    <i class="bi bi-x-circle me-1"></i>
+                                }
+                                @if (isCompleted)
+                                {
+                                    <i class="bi bi-flag me-1"></i>
+                                }
+                                @trip.Status
+                            </span>
+                            <div class="text-end">
+                                <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Departure</small>
+                                <small class="fw-bold text-dark">@trip.Date.ToString("ddd, dd MMM yyyy")</small>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-5">
+                                <h5 class="fw-bold text-dark mb-1">@trip.FromCity</h5>
+                                <div class="text-primary fw-bold" style="font-size: 0.85rem;">
+                                    <i class="bi bi-clock me-1"></i> @trip.DepartureTime.ToString("hh:mm tt")
+                                </div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="route-divider">
+                                    <i class="bi bi-bus-front text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <h5 class="fw-bold text-dark mb-1">@trip.ToCity</h5>
+                                <div class="text-muted fw-medium" style="font-size: 0.85rem;">
+                                    <i class="bi bi-clock-history me-1"></i> @trip.ArrivalTime.ToString("hh:mm tt")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between bg-light rounded-3 p-3 mb-4">
+                            <div class="small text-muted">
+                                <i class="bi bi-shield-check text-primary me-1"></i> @trip.BusType
+                            </div>
+                            <div class="small @(trip.AvailableSeats < 5 ? "text-danger fw-bold" : "text-muted")">
+                                <i class="bi bi-person-check me-1"></i>
+                                <span id="seats-count-@trip.tripId">@trip.AvailableSeats Seats left</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted small">Total Price</span>
+                                <div class="h4 fw-bold text-dark mb-0">$@trip.Price <span class="small text-muted" style="font-size: 0.7rem;">/seat</span></div>
+                            </div>
+
+                            <div class="btn-group">
+                                @if (isOpen)
+                                {
+                                    <a asp-controller="Trip" asp-action="ShowTrip" asp-route-id="@trip.tripId" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px; transition: all 0.3s;">
+                                        Book Now <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-secondary disabled px-4" style="border-radius: 12px; font-size: 0.8rem;">
+                                        @(isCancelled ? "Cancelled" : "Full / Completed")
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

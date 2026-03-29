@@ -1,5 +1,6 @@
 using Bus_Booking_System.Data;
 using Bus_Booking_System.Hubs;
+using Bus_Booking_System.Models;
 using Bus_Booking_System.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +32,7 @@ namespace Bus_Booking_System
             builder.Services.AddScoped<ICityRepository, CityRepository>();
             builder.Services.AddScoped<IRouteRepository, RouteRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-            builder.Services.AddSignalR();
-            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddHttpContextAccessor();
 
             // SignalR
             builder.Services.AddSignalR();
