@@ -27,5 +27,10 @@ namespace Bus_Booking_System.Repository
         }
 
         public void Save() => _context.SaveChanges();
+
+        public IQueryable<City> GetAllQueryable()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

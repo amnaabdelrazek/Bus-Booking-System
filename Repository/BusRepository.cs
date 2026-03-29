@@ -1,5 +1,6 @@
 ﻿using Bus_Booking_System.Data;
 using Bus_Booking_System.Models;
+
 namespace Bus_Booking_System.Repository
 {
     public class BusRepository : IBusRepository
@@ -26,5 +27,10 @@ namespace Bus_Booking_System.Repository
         }
 
         public void Save() => _context.SaveChanges();
+
+        public IQueryable<Bus> GetAllQueryable()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
