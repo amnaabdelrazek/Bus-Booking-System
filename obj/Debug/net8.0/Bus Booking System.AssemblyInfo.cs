@@ -11,15 +11,21 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bus Booking System")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 <<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3402b3af39fdba5f4583e106ca21dbc0c307dd0")]
 =======
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f745e9dca988e89e51ecdf284eaea9a3dcd829d5")]
 >>>>>>> e3402b3af39fdba5f4583e106ca21dbc0c307dd0
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d7fa49d95cc6cbf6053d48dd6aced250209faad7")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3402b3af39fdba5f4583e106ca21dbc0c307dd0")]
+>>>>>>> d7fa49d95cc6cbf6053d48dd6aced250209faad7
+>>>>>>> arwa-final
 [assembly: System.Reflection.AssemblyProductAttribute("Bus Booking System")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bus Booking System")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -32,9 +32,9 @@ namespace Bus_Booking_System.Repository
         public IQueryable<Bus> GetAllQueryable()
         {
             return _context.Buses
-                   .Include(t => t.Seats)
-                   .Include(t => t.Trips)
-                   .AsNoTracking();
+                    .Include(t => t.Seats)
+                    .Include(t => t.Trips)
+                    .AsNoTracking();
         }
     }
 }
