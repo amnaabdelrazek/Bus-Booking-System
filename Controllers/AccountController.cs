@@ -54,8 +54,8 @@ namespace Bus_Booking_System.Controllers
                 var role = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
                 if (role == "Admin")
-                    return RedirectToAction("Index", "Admin"); // صفحة الادمن
-                return RedirectToAction("Index", "Trip"); // صفحة المستخدم العادي
+                    return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index", "Trip"); 
             }
 
             ModelState.AddModelError(string.Empty, "Invalid username or password.");

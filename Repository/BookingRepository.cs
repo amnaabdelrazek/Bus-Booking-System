@@ -10,6 +10,12 @@ namespace Bus_Booking_System.Repository
         private readonly MyAppContext _context;
         public BookingRepository(MyAppContext context) { _context = context; }
 
+        public BookingRepository(MyAppContext myAppContext)
+        {
+            appContext = myAppContext;
+        }
+
+        public List<Booking> GetAll() => appContext.Bookings.Where(b => !b.IsDeleted).ToList();
         public async Task addAsync(Booking booking)
         {
             await _context.Bookings.AddAsync(booking);
@@ -24,7 +30,7 @@ namespace Bus_Booking_System.Repository
         {
             _context.SeatReservations.Remove(seatReservation);
         }
-
+       
         public async Task<Booking> GetBookingWithDetailsAsync(int id)
         {
             return await _context.Bookings
@@ -32,6 +38,7 @@ namespace Bus_Booking_System.Repository
                 .Include(b => b.SeatReservations)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
+        
 
         public async Task<Booking> GetByIdAsync(int id)
         {
@@ -43,8 +50,9 @@ namespace Bus_Booking_System.Repository
         }
 
         public async Task<IEnumerable<Booking>> GetUserBookingsAsync(int userId)
+        public List<Booking> GetAllWithDetails()
         {
-            return await _context.Bookings
+            return await appContext.Bookings
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.BusRoute)
                         .ThenInclude(r => r.OriginCity)
@@ -56,22 +64,9 @@ namespace Bus_Booking_System.Repository
                 .OrderByDescending(b => b.Id)
                 .ToListAsync();
         }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync() > 0);
-        }
-
-        public void Update(Booking booking)
-        {
-            _context.Bookings.Update(booking);
-        }
-        public List<Booking> GetAll() => _context.Bookings.Where(b => !b.IsDeleted).ToList();
-
-
         public List<Booking> GetAllWithDetails()
         {
-            return _context.Bookings
+            return appContext.Bookings
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.BusRoute)
                         .ThenInclude(r => r.OriginCity)
@@ -80,30 +75,35 @@ namespace Bus_Booking_System.Repository
                         .ThenInclude(r => r.DestinationCity)
                 .Include(b => b.User)
                 .Include(b => b.SeatReservations)
-                    .ThenInclude(sr => sr.Seat)
+                .OrderByDescending(b => b.Id)
                 .Where(b => !b.IsDeleted)
                 .ToList();
         }
 
-        public Booking GetById(int id) => _context.Bookings.FirstOrDefault(b => b.Id == id && !b.IsDeleted);
-        public void Add(Booking entity) => _context.Bookings.Add(entity);
-
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await appContext.SaveChangesAsync() > 0);
+        }
+        public Booking GetById(int id) => appContext.Bookings.FirstOrDefault(b => b.Id == id && !b.IsDeleted);
+        public void Add(Booking entity) => appContext.Bookings.Add(entity);
+        public void Update(Booking entity) => appContext.Bookings.Update(entity);
         public void Delete(int id)
         {
             var booking = GetById(id);
             if (booking != null)
             {
+                //appContext.Bookings.Update(booking);
                 booking.IsDeleted = true;
-                _context.Bookings.Update(booking);
+                appContext.Bookings.Update(booking);
             }
         }
-        public void Save() => _context.SaveChanges();
+        public void Save() => appContext.SaveChanges();
 
         public IQueryable<Booking> GetAllQueryable()
         {
-            return _context.Bookings
-                .Include(t => t.SeatReservations)
-                .AsNoTracking();
+            return appContext.Bookings
+                   .Include(t => t.SeatReservations)
+                   .AsNoTracking();
         }
     }
 }

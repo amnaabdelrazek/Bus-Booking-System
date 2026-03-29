@@ -38,6 +38,18 @@ namespace Bus_Booking_System.Controllers
             };
             return View(bookingVM);
         }
+        //public IActionResult Confirm(int tripId, string seats, decimal price)
+        //{
+        //    var seatsIds = seats.Split(',').Select(int.Parse).ToList();
+        //    var bookingVM = new ConfirmBookingVM
+        //    {
+        //        TripId = tripId,
+        //        SeatIds = seatsIds,
+        //        PricePerSeat = price
+        //    };
+        //    return View(bookingVM);
+        //}
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Confirm(ConfirmBookingVM confirmBooking)
@@ -45,10 +57,8 @@ namespace Bus_Booking_System.Controllers
             var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
                                  ?? User.FindFirstValue("Id");
 
-            
             if (string.IsNullOrEmpty(claimValue) || !int.TryParse(claimValue, out int userId) || userId == 0)
             {
-                
                 return RedirectToAction("Login", "Account");
             }
             var booking = new Booking
@@ -57,12 +67,11 @@ namespace Bus_Booking_System.Controllers
                 TotalPrice = confirmBooking.TotalPrice,
                 Status = BookingStatus.Confirmed,
                 UserId = userId
-                
             };
 
             await bookingRepository.addAsync(booking);
 
-            foreach(var seatId in confirmBooking.SeatIds)
+            foreach (var seatId in confirmBooking.SeatIds)
             {
                 var reservation = new SeatReservation
                 {
@@ -73,17 +82,16 @@ namespace Bus_Booking_System.Controllers
                     ExpireAt = DateTime.Now.AddDays(1)
                 };
                 await bookingRepository.AddSeatReservationAsync(reservation);
-
             }
 
             if (await bookingRepository.SaveChangesAsync())
             {
-                var trip = tripRepository.GetById(confirmBooking.TripId);
+                var trip = tripRepository.GetById(confirmBooking.TripId) as Trip; // Explicitly cast to resolve ambiguity
                 bool isFull = false;
                 if (trip != null)
                 {
                     trip.AvailableSeats -= confirmBooking.SeatIds.Count;
-                    if(trip.AvailableSeats <= 0)
+                    if (trip.AvailableSeats <= 0)
                     {
                         trip.AvailableSeats = 0;
                         trip.Status = TripStatus.Completed;
