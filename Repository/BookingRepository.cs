@@ -1,14 +1,12 @@
 ﻿using Bus_Booking_System.Data;
 using Bus_Booking_System.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Bus_Booking_System.Repository
 {
     public class BookingRepository : IBookingRepository
     {
-        private readonly MyAppContext _context;
-        public BookingRepository(MyAppContext context) { _context = context; }
+        private readonly MyAppContext appContext;
 
         public BookingRepository(MyAppContext myAppContext)
         {
@@ -18,31 +16,31 @@ namespace Bus_Booking_System.Repository
         public List<Booking> GetAll() => appContext.Bookings.Where(b => !b.IsDeleted).ToList();
         public async Task addAsync(Booking booking)
         {
-            await _context.Bookings.AddAsync(booking);
+            await appContext.Bookings.AddAsync(booking);
         }
 
         public async Task AddSeatReservationAsync(SeatReservation reservation)
         {
-            await _context.SeatReservations.AddAsync(reservation);
+            await appContext.SeatReservations.AddAsync(reservation);
         }
 
         public void DeleteReservation(SeatReservation seatReservation)
         {
-            _context.SeatReservations.Remove(seatReservation);
+            appContext.SeatReservations.Remove(seatReservation);
         }
-       
+
         public async Task<Booking> GetBookingWithDetailsAsync(int id)
         {
-            return await _context.Bookings
+            return await appContext.Bookings
                 .Include(b => b.Trip)
                 .Include(b => b.SeatReservations)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
-        
+
 
         public async Task<Booking> GetByIdAsync(int id)
         {
-            return await _context.Bookings
+            return await appContext.Bookings
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.BusRoute)
                 .Include(b => b.SeatReservations)
@@ -50,7 +48,6 @@ namespace Bus_Booking_System.Repository
         }
 
         public async Task<IEnumerable<Booking>> GetUserBookingsAsync(int userId)
-        public List<Booking> GetAllWithDetails()
         {
             return await appContext.Bookings
                 .Include(b => b.Trip)
