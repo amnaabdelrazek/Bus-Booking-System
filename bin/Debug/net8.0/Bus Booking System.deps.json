@@ -1965,6 +1965,10 @@
         }
       },
       "System.Diagnostics.EventLog/8.0.0": {},
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e0fe43a6a5df01e1e99fcf1ce5af7ee3b29c4c23
       "System.Formats.Asn1/8.0.2": {
         "runtime": {
           "lib/net8.0/System.Formats.Asn1.dll": {
@@ -1974,6 +1978,13 @@
         }
       },
       "System.IdentityModel.Tokens.Jwt/6.35.0": {
+<<<<<<< HEAD
+=======
+=======
+      "System.Formats.Asn1/8.0.2": {},
+      "System.IdentityModel.Tokens.Jwt/6.24.0": {
+>>>>>>> origin/Mahmoud-Final
+>>>>>>> e0fe43a6a5df01e1e99fcf1ce5af7ee3b29c4c23
         "dependencies": {
           "Microsoft.IdentityModel.JsonWebTokens": "6.35.0",
           "Microsoft.IdentityModel.Tokens": "6.35.0"
