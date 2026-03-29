@@ -1,4 +1,4 @@
-﻿using Bus_Booking_System.Hubs;
+using Bus_Booking_System.Hubs;
 using Bus_Booking_System.Models;
 using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
@@ -13,12 +13,14 @@ namespace Bus_Booking_System.Controllers
     {
         private readonly IBookingRepository bookingRepository;
         private readonly IHubContext<BookingHub> hubContext;
+        private readonly IHubContext<DashboardHub> dashboardHubContext;
         private readonly ITripRepository tripRepository;
 
-        public BookingController(IBookingRepository _bookingRepository, IHubContext<BookingHub> _hubContext, ITripRepository _tripRepository)
+        public BookingController(IBookingRepository _bookingRepository, IHubContext<BookingHub> _hubContext, IHubContext<DashboardHub> _dashboardHubContext, ITripRepository _tripRepository)
         {
             bookingRepository = _bookingRepository;
             hubContext = _hubContext;
+            dashboardHubContext = _dashboardHubContext;
             tripRepository = _tripRepository;
         }
         public IActionResult Index()
@@ -38,17 +40,6 @@ namespace Bus_Booking_System.Controllers
             };
             return View(bookingVM);
         }
-        //public IActionResult Confirm(int tripId, string seats, decimal price)
-        //{
-        //    var seatsIds = seats.Split(',').Select(int.Parse).ToList();
-        //    var bookingVM = new ConfirmBookingVM
-        //    {
-        //        TripId = tripId,
-        //        SeatIds = seatsIds,
-        //        PricePerSeat = price
-        //    };
-        //    return View(bookingVM);
-        //}
 
         [HttpPost]
         [Authorize]
@@ -86,7 +77,7 @@ namespace Bus_Booking_System.Controllers
 
             if (await bookingRepository.SaveChangesAsync())
             {
-                var trip = tripRepository.GetById(confirmBooking.TripId) as Trip; // Explicitly cast to resolve ambiguity
+                var trip = tripRepository.GetById(confirmBooking.TripId);
                 bool isFull = false;
                 if (trip != null)
                 {
@@ -102,6 +93,8 @@ namespace Bus_Booking_System.Controllers
                 }
 
                 await hubContext.Clients.All.SendAsync("UpdateSeatStatus", confirmBooking.TripId, confirmBooking.SeatIds, "Booked", isFull);
+                await hubContext.Clients.All.SendAsync("ReceiveBookingsUpdate");
+                await dashboardHubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
                 return RedirectToAction("MyBookings");
             }
             return BadRequest();
@@ -114,20 +107,18 @@ namespace Bus_Booking_System.Controllers
 
             if (!int.TryParse(claimValue, out userId))
             {
-               
                 var backupClaim = User.FindFirstValue("Id");
                 int.TryParse(backupClaim, out userId);
             }
             if (string.IsNullOrEmpty(claimValue))
             {
-                return RedirectToAction("Login", "Account"); 
+                return RedirectToAction("Login", "Account");
             }
-            //int userId = int.Parse(userIdstr);
             var bookings = await bookingRepository.GetUserBookingsAsync(userId);
             var BookingVM = bookings.Select(b => new BookingDeatailsVM
             {
                 BookingId = b.Id,
-                Route = $"{b.Trip.BusRoute.OriginCity.Name} ➝ {b.Trip.BusRoute.DestinationCity.Name}",
+                Route = $"{b.Trip.BusRoute.OriginCity.Name} -> {b.Trip.BusRoute.DestinationCity.Name}",
                 Date = b.Trip.TravelDate.ToShortDateString(),
                 Time = b.Trip.DepartureTime.ToString("hh:mm tt"),
                 TotalPrice = b.TotalPrice,
@@ -141,34 +132,33 @@ namespace Bus_Booking_System.Controllers
         public async Task<IActionResult> CancelBooking(int BookingId)
         {
             var booking = await bookingRepository.GetBookingWithDetailsAsync(BookingId);
-            if(booking == null)
+            if (booking == null)
                 return NotFound();
             booking.Status = BookingStatus.Cancelled;
 
             var trip = booking.Trip;
-            var seatIds = booking.SeatReservations.Select(sr=>sr.SeatId).ToList();
+            var seatIds = booking.SeatReservations.Select(sr => sr.SeatId).ToList();
             trip.AvailableSeats += seatIds.Count();
 
-            if(trip.Status == TripStatus.Completed &&  trip.AvailableSeats > 0)
+            if (trip.Status == TripStatus.Completed && trip.AvailableSeats > 0)
             {
                 trip.Status = TripStatus.OpenForBooking;
             }
 
-            foreach(var res in booking.SeatReservations)
+            foreach (var res in booking.SeatReservations)
             {
                 bookingRepository.DeleteReservation(res);
             }
 
-            if(await bookingRepository.SaveChangesAsync())
+            if (await bookingRepository.SaveChangesAsync())
             {
                 await hubContext.Clients.All.SendAsync("UpdateSeatStatus", trip.Id, seatIds, "Available", false);
-
                 await hubContext.Clients.All.SendAsync("BookingCancelled", BookingId);
+                await hubContext.Clients.All.SendAsync("ReceiveBookingsUpdate");
+                await dashboardHubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
                 return Ok();
             }
             return BadRequest();
         }
     }
 }
-
-
