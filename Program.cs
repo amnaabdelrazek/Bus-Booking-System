@@ -80,13 +80,14 @@ namespace Bus_Booking_System
 
             // SignalR hub
             app.MapHub<BookingHub>("/bookingHub");
+            app.MapHub<DashboardHub>("/dashboardHub");
 
             // MVC routes
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapHub<DashboardHub>("/dashboardHub");
-                pattern: "{controller=Trip}/{action=Index}/{id?}");
+            
+                //pattern: "{controller=Trip}/{action=Index}/{id?}");
 
             await app.RunAsync();
         }

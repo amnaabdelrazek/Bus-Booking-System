@@ -15,7 +15,7 @@ namespace Bus_Booking_System.ViewModel
         [MaxLength(50, ErrorMessage = "User Name cannot exceed 50 characters")]
         [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "User Name can only contain letters and numbers")]
         [MinLength(4, ErrorMessage = "User Name must be at least 4 characters")]
-        public string UserName { get; set; }
+        //public string UserName { get; set; }
         public string? UserName { get; set; }
 
         [Required]
@@ -26,15 +26,16 @@ namespace Bus_Booking_System.ViewModel
         [Phone]
         [RegularExpression(@"^01[0-2,5]{1}[0-9]{8}$",
             ErrorMessage = "Please enter a valid Egyptian phone number")]
-        public string Phone { get; set; }
         public string? Phone { get; set; }
+        //public string Phone { get; set; }
+
 
         [Required]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
-        public string Password { get; set; }
-        [MinLength(6)]
         public string? Password { get; set; }
+        //[MinLength(6)]
+        //public string? Password { get; set; }
 
         [Required]
         [Compare("Password", ErrorMessage = "Passwords do not match")]
