@@ -4,41 +4,161 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<div class="d-flex justify-content-center align-items-center my-5">
-    <div class="custom-card w-100" style="max-width: 500px;">
-        <h3 class="fw-bold mb-4 text-center" style="color: var(--dark-blue);">Edit Profile</h3>
+<style>
+    :root {
+        --primary-blue: #0d6efd;
+        --dark-navy: #1e293b;
+        --input-focus: rgba(13, 110, 253, 0.15);
+    }
 
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+    .edit-card {
+        background: #ffffff;
+        border-radius: 25px;
+        border: none;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.07);
+        padding: 40px;
+    }
 
-            <div class="mb-3">
-                <label asp-for="FullName" class="form-label text-muted small fw-bold"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger small"></span>
+    .form-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .input-group-text {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        color: #94a3b8;
+    }
+
+    .form-control {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 12px 12px 0;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 4px var(--input-focus);
+        background-color: #fff;
+    }
+
+    .btn-save {
+        background: var(--dark-navy);
+        color: white;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s;
+    }
+
+        .btn-save:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #64748b;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: background 0.3s;
+    }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: var(--dark-navy);
+        }
+
+    .validation-summary-errors ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+
+            <div class="edit-card">
+                <div class="text-center mb-4">
+                    <div class="display-6 fw-bold text-dark mb-2">Edit Profile</div>
+                    <p class="text-muted small">Keep your contact details up to date</p>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="All" class="alert alert-danger border-0 small py-2 mb-4" style="border-radius: 12px;"></div>
+                    }
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger small ms-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-at"></i></span>
+                            <input asp-for="UserName" class="form-control" placeholder="Choose a username" />
+                        </div>
+                        <span asp-validation-for="UserName" class="text-danger small ms-1"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small ms-1"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                            <input asp-for="Phone" class="form-control" placeholder="01XXXXXXXXX" />
+                        </div>
+                        <span asp-validation-for="Phone" class="text-danger small ms-1"></span>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-save shadow-sm">
+                            Save Changes <i class="bi bi-check2-circle ms-1"></i>
+                        </button>
+                        <a asp-action="Index" class="btn btn-cancel">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="UserName" class="form-label text-muted small fw-bold"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger small"></span>
+            <div class="text-center mt-4">
+                <small class="text-muted">Need to secure your account? <a asp-action="ChangePassword" class="text-primary fw-bold text-decoration-none">Change Password</a></small>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label text-muted small fw-bold"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-4">
-                <label asp-for="Phone" class="form-label text-muted small fw-bold"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger small"></span>
-            </div>
-
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary-custom text-white">Save Changes</button>
-                <a asp-action="Index" class="btn btn-light text-muted">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>

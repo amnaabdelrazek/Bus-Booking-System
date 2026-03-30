@@ -4,116 +4,157 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold text-muted"><i class="bi bi-ticket-detailed me-2"></i>Passenger Bookings</h3>
-</div>
-
-@if (TempData["SuccessMsg"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMsg"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="card border-0 shadow-sm rounded-3">
-    <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th class="ps-4">Booking ID</th>
-                    <th>Passenger Info</th>
-                    <th>Trip Details</th>
-                    <th>Booking Info</th>
-                    <th>Status</th>
-                    <th class="text-end pe-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td class="ps-4 fw-bold text-primary">#BK-@item.Id.ToString("D4")</td>
-
-                        <td>
-                            <div class="fw-bold">@item.User?.UserName</div>
-                            <small class="text-muted"><i class="bi bi-person"></i> User ID: @item.UserId</small>
-                        </td>
-
-                        <td>
-                            <div class="fw-bold text-dark">
-                                @item.Trip?.BusRoute?.OriginCity?.Name <i class="bi bi-arrow-right mx-1"></i> @item.Trip?.BusRoute?.DestinationCity?.Name
-                            </div>
-                            <small class="text-muted">@item.Trip?.TravelDate.ToString("MMM dd, yyyy")</small>
-                        </td>
-
-                        <td>
-                            <span class="badge bg-dark mb-1 text-wrap text-start" style="max-width: 150px;">
-                                <i class="bi bi-ui-checks-grid me-1"></i> Seats:
-                                @if (item.SeatReservations != null && item.SeatReservations.Any())
-                                {
-                                    
-                                    @string.Join(", ", item.SeatReservations.Select(sr => sr.Seat?.SeatNum ?? sr.SeatId.ToString()))
-                                }
-                                else
-                                {
-                                    <span>N/A</span>
-                                }
-                            </span><br />
-                            <span class="fw-bold text-success">Total: $@item.TotalPrice</span>
-                        </td>
-
-                        <td>
-                            @if (item.Status == Bus_Booking_System.Models.BookingStatus.Confirmed)
-                            {
-                                <span class="badge bg-success-subtle text-success border border-success">Confirmed</span>
-                            }
-                            else if (item.Status == Bus_Booking_System.Models.BookingStatus.Pending)
-                            {
-                                <span class="badge bg-warning-subtle text-warning border border-warning">Pending</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger-subtle text-danger border border-danger">Cancelled</span>
-                            }
-                        </td>
-
-                        <td class="text-end pe-4">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit Status">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to completely cancel and delete this booking?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Booking">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="6" class="text-center py-4 text-muted">No bookings found in the system.</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
 <style>
+    /* إضافة المتغيرات لضمان عمل التصميم حتى لو مش موجودة في الـ AdminLayout */
+    :root {
+        --primary-blue: #0056b3;
+        --dark-blue: #0d2b4d;
+    }
+
+    .custom-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 24px rgba(13, 43, 77, 0.08);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: all 0.2s ease-in-out;
+    }
+
     .bg-success-subtle {
         background-color: #d1e7dd;
+        color: #0f5132;
     }
 
     .bg-danger-subtle {
         background-color: #f8d7da;
+        color: #842029;
     }
 
     .bg-warning-subtle {
         background-color: #fff3cd;
-        color: #856404 !important;
+        color: #856404;
     }
 </style>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: var(--dark-blue);">
+                <i class="bi bi-ticket-detailed me-2 text-primary"></i>Passenger Bookings
+            </h3>
+            <p class="text-muted small">Manage and monitor all system bookings</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMsg"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMsg"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="custom-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--dark-blue); color: white;">
+                    <tr>
+                        <th class="ps-4 py-3 fw-normal">Booking ID</th>
+                        <th class="py-3 fw-normal">Passenger Info</th>
+                        <th class="py-3 fw-normal">Trip Details</th>
+                        <th class="py-3 fw-normal">Booking Info</th>
+                        <th class="py-3 fw-normal">Status</th>
+                        <th class="text-end pe-4 py-3 fw-normal">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <span class="fw-bold" style="color: var(--primary-blue);">#BK-@item.Id.ToString("D4")</span>
+                            </td>
+
+                            <td>
+                                <div class="fw-bold text-dark mb-1">
+                                    <i class="bi bi-person-circle text-muted me-1"></i> @item.User?.UserName
+                                </div>
+                                <small class="text-muted" style="font-size: 0.75rem;">ID: @item.UserId</small>
+                            </td>
+
+                            <td>
+                                <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">
+                                    @item.Trip?.BusRoute?.OriginCity?.Name
+                                    <i class="bi bi-arrow-right mx-1 text-primary"></i>
+                                    @item.Trip?.BusRoute?.DestinationCity?.Name
+                                </div>
+                                <small class="text-muted fw-medium">
+                                    <i class="bi bi-calendar-event me-1"></i> @item.Trip?.TravelDate.ToString("MMM dd, yyyy")
+                                </small>
+                            </td>
+
+                            <td>
+                                <div class="mb-1">
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="bi bi-ui-checks-grid me-1 text-primary"></i> Seats:
+                                        @if (item.SeatReservations != null && item.SeatReservations.Any())
+                                        {
+                                            <strong class="ms-1">@string.Join(", ", item.SeatReservations.Select(sr => sr.Seat?.SeatNum ?? sr.SeatId.ToString()))</strong>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted ms-1">N/A</span>
+                                        }
+                                    </span>
+                                </div>
+                                <span class="fw-bold text-success" style="font-size: 0.95rem;">Total: $@item.TotalPrice</span>
+                            </td>
+
+                            <td>
+                                @if (item.Status == Bus_Booking_System.Models.BookingStatus.Confirmed)
+                                {
+                                    <span class="badge bg-success-subtle border border-success px-3 py-2 rounded-pill">Confirmed</span>
+                                }
+                                else if (item.Status == Bus_Booking_System.Models.BookingStatus.Pending)
+                                {
+                                    <span class="badge bg-warning-subtle border border-warning px-3 py-2 rounded-pill">Pending</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle border border-danger px-3 py-2 rounded-pill">Cancelled</span>
+                                }
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-circle me-2" title="Edit Status" style="width: 32px; height: 32px; padding: 4px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to completely cancel and delete this booking?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" title="Delete Booking" style="width: 32px; height: 32px; padding: 4px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-inbox text-muted display-4 d-block mb-3"></i>
+                                <span class="text-muted fw-bold">No bookings found in the system.</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
@@ -121,11 +162,9 @@
         var connection = new signalR.HubConnectionBuilder()
             .withUrl("/bookingHub")
             .build();
-
         connection.on("ReceiveBookingsUpdate", function () {
             location.reload();
         });
-
         connection.start().catch(function (err) {
             console.error(err.toString());
         });

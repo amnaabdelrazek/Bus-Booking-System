@@ -1,14 +1,89 @@
-@model Bus_Booking_System.ViewModel.TripIndexVM
+﻿@model Bus_Booking_System.ViewModel.TripIndexVM
+
+<style>
+    /* تحسينات عامة للبطاقة */
+    .trip-card {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid #f1f5f9 !important;
+        background: #ffffff;
+        position: relative;
+    }
+
+        .trip-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            border-color: #0d6efd !important;
+        }
+
+    /* تصميم المسار (الخط المنقط) */
+    .route-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+    }
+
+    .route-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: repeating-linear-gradient(to right, #e2e8f0 0, #e2e8f0 5px, transparent 5px, transparent 10px);
+        z-index: 1;
+    }
+
+    .bus-icon-wrap {
+        position: relative;
+        z-index: 2;
+        background: #fff;
+        padding: 0 10px;
+        color: #64748b;
+        transition: transform 0.3s ease;
+    }
+
+    .trip-card:hover .bus-icon-wrap {
+        color: #0d6efd;
+        transform: scale(1.2);
+    }
+
+    /* تأثير للرحلات الملغاة */
+    .trip-cancelled {
+        opacity: 0.6;
+        filter: grayscale(0.8);
+        pointer-events: none;
+    }
+
+    /* تنسيق السعر */
+    .price-tag {
+        color: #1e293b;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .price-currency {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 400;
+    }
+
+    /* تحسين شكل الـ Badge */
+    .status-badge {
+        font-size: 0.7rem !important;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 12px !important;
+    }
+</style>
 
 <input type="hidden" id="TripsCountValue" value="@Model.Trips.Count" />
 
 <div class="row g-4">
     @if (!Model.Trips.Any())
     {
-        <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm">
-            <img src="https://illustrations.popsy.co/gray/bus-stop.svg" style="width: 200px;" alt="No trips">
-            <h5 class="text-dark fw-bold mt-4">No trips match your filters</h5>
-            <p class="text-muted">Try adjusting your filters to find more options.</p>
+        <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm border">
+            <img src="https://illustrations.popsy.co/gray/bus-stop.svg" style="width: 220px;" alt="No trips">
+            <h5 class="text-dark fw-bold mt-4">No trips found</h5>
+            <p class="text-muted">Adjust your search or filters to find more options.</p>
         </div>
     }
     else
@@ -17,96 +92,81 @@
         {
             bool isCancelled = trip.Status == "Cancelled";
             bool isCompleted = trip.Status == "Completed";
-            bool isOpen = trip.Status == "OpenForBooking";
+            bool isOpen = trip.Status == "OpenForBooking" && trip.AvailableSeats > 0;
 
-            string cardClass = isCancelled ? "trip-cancelled" : (isCompleted ? "trip-completed" : "");
-            string badgeClass = "bg-light text-muted";
+            string cardClass = isCancelled ? "trip-cancelled" : "";
+            string badgeClass = trip.Status switch
+            {
+                "OpenForBooking" => "bg-success-subtle text-success border-success",
+                "Completed" => "bg-primary-subtle text-primary border-primary",
+                "Cancelled" => "bg-danger-subtle text-danger border-danger",
+                _ => "bg-light text-muted"
+            };
 
-            if (trip.Status == "OpenForBooking")
-            {
-                badgeClass = "bg-success-subtle text-success border-success";
-            }
-            else if (trip.Status == "Completed")
-            {
-                badgeClass = "bg-primary-subtle text-primary border-primary";
-            }
-            else if (trip.Status == "Cancelled")
-            {
-                badgeClass = "bg-danger-subtle text-danger border-danger";
-            }
-
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm trip-card h-100 @cardClass" style="border-radius: 20px; overflow: hidden;">
+            <div class="col-md-7 col-xl-6">
+                <div class="card trip-card h-100 @cardClass" style="border-radius: 24px; overflow: hidden;">
                     <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <span class="badge border rounded-pill px-3 py-2 fw-bold @badgeClass" style="font-size: 0.75rem;">
-                                @if (isOpen)
-                                {
-                                    <i class="bi bi-check2-circle me-1"></i>
-                                }
-                                @if (isCancelled)
-                                {
-                                    <i class="bi bi-x-circle me-1"></i>
-                                }
-                                @if (isCompleted)
-                                {
-                                    <i class="bi bi-flag me-1"></i>
-                                }
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <span class="badge border rounded-pill status-badge @badgeClass">
+                                <i class="bi @(isOpen ? "bi-record-circle-fill" : "bi-info-circle") me-1"></i>
                                 @trip.Status
                             </span>
                             <div class="text-end">
-                                <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Departure</small>
-                                <small class="fw-bold text-dark">@trip.Date.ToString("ddd, dd MMM yyyy")</small>
+                                <span class="d-block text-muted small fw-bold">DEPARTURE</span>
+                                <span class="fw-bold text-dark small">@trip.Date.ToString("ddd, dd MMM")</span>
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
+                        <div class="row align-items-center mb-4 text-center">
                             <div class="col-5">
                                 <h5 class="fw-bold text-dark mb-1">@trip.FromCity</h5>
-                                <div class="text-primary fw-bold" style="font-size: 0.85rem;">
-                                    <i class="bi bi-clock me-1"></i> @trip.DepartureTime.ToString("hh:mm tt")
+                                <div class="text-primary fw-bold small">
+                                    <i class="bi bi-clock-fill me-1"></i>@trip.DepartureTime.ToString("hh:mm tt")
                                 </div>
                             </div>
-                            <div class="col-2 text-center">
-                                <div class="route-divider">
-                                    <i class="bi bi-bus-front text-muted"></i>
+                            <div class="col-2">
+                                <div class="route-wrapper">
+                                    <div class="route-line"></div>
+                                    <div class="bus-icon-wrap">
+                                        <i class="bi bi-bus-front fs-5"></i>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-5 text-end">
+                            <div class="col-5">
                                 <h5 class="fw-bold text-dark mb-1">@trip.ToCity</h5>
-                                <div class="text-muted fw-medium" style="font-size: 0.85rem;">
-                                    <i class="bi bi-clock-history me-1"></i> @trip.ArrivalTime.ToString("hh:mm tt")
+                                <div class="text-muted fw-bold small">
+                                    <i class="bi bi-clock me-1"></i>@trip.ArrivalTime.ToString("hh:mm tt")
                                 </div>
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between bg-light rounded-3 p-3 mb-4">
-                            <div class="small text-muted">
-                                <i class="bi bi-shield-check text-primary me-1"></i> @trip.BusType
+                        <div class="d-flex justify-content-between align-items-center bg-light rounded-4 p-3 mb-4">
+                            <div class="small fw-bold text-secondary">
+                                <i class="bi bi-stars text-warning me-1"></i> @trip.BusType
                             </div>
-                            <div class="small @(trip.AvailableSeats < 5 ? "text-danger fw-bold" : "text-muted")">
-                                <i class="bi bi-person-check me-1"></i>
+                            <div class="seat-info @(trip.AvailableSeats < 5 ? "text-danger fw-bold" : "text-muted") small">
+                                <i class="bi bi-person-bounding-box me-1"></i>
                                 <span id="seats-count-@trip.tripId">@trip.AvailableSeats Seats left</span>
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
                             <div>
-                                <span class="text-muted small">Total Price</span>
-                                <div class="h4 fw-bold text-dark mb-0">$@trip.Price <span class="small text-muted" style="font-size: 0.7rem;">/seat</span></div>
+                                <div class="price-tag">$@trip.Price<span class="price-currency">/seat</span></div>
                             </div>
 
-                            <div class="btn-group">
+                            <div class="action-area" id="action-@trip.tripId">
                                 @if (isOpen)
                                 {
-                                    <a asp-controller="Trip" asp-action="ShowTrip" asp-route-id="@trip.tripId" class="btn btn-dark px-4 py-2 fw-bold" style="border-radius: 12px; transition: all 0.3s;">
-                                        Book Now <i class="bi bi-arrow-right ms-1"></i>
+                                    <a asp-controller="Trip" asp-action="ShowTrip" asp-route-id="@trip.tripId"
+                                       class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
+                                        Book <i class="bi bi-arrow-right ms-1"></i>
                                     </a>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-outline-secondary disabled px-4" style="border-radius: 12px; font-size: 0.8rem;">
-                                        @(isCancelled ? "Cancelled" : "Full / Completed")
+                                    <button class="btn btn-outline-secondary disabled rounded-pill px-3 py-2 small" style="font-size: 0.8rem;">
+                                        @(isCancelled ? "Cancelled" : "Full / Closed")
                                     </button>
                                 }
                             </div>
@@ -117,3 +177,51 @@
         }
     }
 </div>
+
+<script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/bookingHub")
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("UpdateSeatStatus", function (tripId, seatIds, status) {
+        const seatCountSpan = document.getElementById(`seats-count-${tripId}`);
+        const actionArea = document.getElementById(`action-${tripId}`);
+
+        if (seatCountSpan) {
+            let currentCount = parseInt(seatCountSpan.innerText);
+
+            if (status === "Booked") {
+                currentCount -= seatIds.length;
+            } else if (status === "Available") {
+                currentCount += seatIds.length;
+            }
+
+            // تحديث رقم المقاعد المتاحة
+            seatCountSpan.innerText = `${currentCount} Seats left`;
+
+            // التحكم في مظهر المنطقة (لون النص + الزر)
+            if (currentCount <= 0) {
+                seatCountSpan.innerText = "Full House";
+                seatCountSpan.parentElement.classList.add("text-danger", "fw-bold");
+
+                // تغيير الزر إلى Full تلقائياً
+                if (actionArea) {
+                    actionArea.innerHTML = `
+                            <button class="btn btn-outline-secondary disabled rounded-pill px-3 py-2 small" style="font-size: 0.8rem;">
+                                Full / Closed
+                            </button>`;
+                }
+            } else if (currentCount < 5) {
+                seatCountSpan.parentElement.classList.add("text-danger", "fw-bold");
+                seatCountSpan.parentElement.classList.remove("text-muted");
+            } else {
+                seatCountSpan.parentElement.classList.remove("text-danger", "fw-bold");
+                seatCountSpan.parentElement.classList.add("text-muted");
+            }
+        }
+    });
+
+    connection.start().catch(err => console.error(err.toString()));
+</script>

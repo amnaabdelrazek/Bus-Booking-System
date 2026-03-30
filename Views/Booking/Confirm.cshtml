@@ -4,41 +4,144 @@
     ViewData["Title"] = "Confirm Booking";
 }
 
+<style>
+    :root {
+        --primary-blue: #0d6efd;
+        --dark-navy: #1e293b;
+        --soft-bg: #f8fafc;
+    }
+
+    body {
+        background-color: var(--soft-bg);
+    }
+
+    .confirm-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .confirm-header {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        padding: 40px 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .seat-badge {
+        background: #f1f5f9;
+        color: var(--primary-blue);
+        border: 1px solid #e2e8f0;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+        .seat-badge:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+    .price-section {
+        border-top: 2px dashed #e2e8f0;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    .btn-confirm {
+        background: var(--dark-navy);
+        color: white;
+        border-radius: 15px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .btn-confirm:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+</style>
+
 <div class="container my-5 d-flex justify-content-center">
-    <div class="custom-card w-100" style="max-width: 500px;">
-        <div class="text-center mb-4">
-            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-            <h3 class="fw-bold mt-2" style="color: var(--dark-blue);">Confirm Your Booking</h3>
-            <p class="text-muted small">Please review your selected seats before proceeding.</p>
+    <div class="confirm-card w-100" style="max-width: 500px;">
+
+        <div class="confirm-header">
+            <div class="mb-3">
+                <i class="bi bi-shield-check" style="font-size: 3.5rem; opacity: 0.9;"></i>
+            </div>
+            <h3 class="fw-bold m-0">Review Booking</h3>
+            <p class="small opacity-75 mt-2">One step away from your journey!</p>
         </div>
 
-        <div class="bg-light p-4 rounded-3 mb-4 text-center">
-            <p class="mb-2 text-muted fw-bold">Selected Seats</p>
-            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
-                @foreach (var seat in Model.SeatIds)
+        <div class="p-4 p-md-5">
+            <div class="mb-4">
+                <h6 class="text-muted fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>RESERVATION SUMMARY</h6>
+
+                <div class="info-item">
+                    <span class="text-muted">Trip Reference:</span>
+                    <span class="fw-bold text-dark">#@Model.TripId</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="text-muted">Price per Seat:</span>
+                    <span class="fw-bold text-dark">@Model.PricePerSeat EGP</span>
+                </div>
+            </div>
+
+            <div class="bg-light p-4 rounded-4 text-center">
+                <p class="mb-3 text-muted small fw-bold text-uppercase">Your Selected Seats</p>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    @foreach (var seat in Model.SeatIds)
+                    {
+                        <div class="seat-badge px-4 py-2 rounded-3">
+                            <i class="bi bi-person-badge me-1"></i> Seat @seat
+                        </div>
+                    }
+                </div>
+
+                <div class="price-section d-flex justify-content-between align-items-center">
+                    <span class="text-muted fw-bold">TOTAL AMOUNT</span>
+                    <div class="text-end">
+                        <span class="h2 fw-bold mb-0 text-primary">@Model.TotalPrice</span>
+                        <span class="small fw-bold text-muted">EGP</span>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Confirm" method="post" class="mt-4">
+                <input type="hidden" asp-for="TripId" />
+                <input type="hidden" asp-for="PricePerSeat" />
+                @for (int i = 0; i < Model.SeatIds.Count; i++)
                 {
-                    <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">Seat @seat</span>
+                    <input type="hidden" name="SeatIds[@i]" value="@Model.SeatIds[i]" />
                 }
-            </div>
-            <hr class="text-muted">
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <span class="text-muted fw-bold">Total Amount:</span>
-                <span class="h3 fw-bold mb-0" style="color: var(--primary-blue);">@Model.TotalPrice EGP</span>
-            </div>
+
+                <button type="submit" class="btn btn-confirm w-100 py-3 fs-5 mb-3">
+                    Confirm & Pay <i class="bi bi-credit-card-2-front ms-2"></i>
+                </button>
+
+                <div class="text-center">
+                    <a href="javascript:history.back()" class="text-decoration-none text-muted small hover-danger">
+                        <i class="bi bi-arrow-left me-1"></i> Go back and change seats
+                    </a>
+                </div>
+            </form>
         </div>
 
-        <form asp-action="Confirm" method="post">
-            <input type="hidden" asp-for="TripId" />
-            <input type="hidden" asp-for="PricePerSeat" />
-            @for (int i = 0; i < Model.SeatIds.Count; i++)
-            {
-                <input type="hidden" name="SeatIds[@i]" value="@Model.SeatIds[i]" />
-            }
-
-            <button type="submit" class="btn btn-dark-custom w-100 py-3 fs-5">
-                Confirm & Proceed <i class="bi bi-arrow-right ms-2"></i>
-            </button>
-            <a href="javascript:history.back()" class="btn btn-link w-100 mt-2 text-muted text-decoration-none">Cancel</a>
-        </form>
+        <div class="text-center pb-4">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                <i class="bi bi-lock-fill me-1"></i> Secure Checkout
+            </span>
+        </div>
     </div>
 </div>

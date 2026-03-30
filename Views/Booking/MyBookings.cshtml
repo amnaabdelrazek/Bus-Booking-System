@@ -4,67 +4,147 @@
     ViewData["Title"] = "My Bookings";
 }
 
+<style>
+    :root {
+        --primary-blue: #0d6efd;
+        --soft-gray: #f1f5f9;
+        --dark-navy: #1e293b;
+    }
+
+    .booking-card {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        background: #fff;
+        border-left: 5px solid var(--primary-blue);
+    }
+
+        .booking-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+
+        .booking-card.cancelled {
+            border-left-color: #ef4444;
+            opacity: 0.8;
+        }
+
+    .ticket-header {
+        background: #fafafa;
+        padding: 15px 20px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .route-text {
+        font-size: 1.1rem;
+        color: var(--dark-navy);
+        letter-spacing: -0.5px;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        font-size: 0.9rem;
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    .btn-cancel-ticket {
+        border: 1px solid #fee2e2;
+        color: #ef4444;
+        background: #fef2f2;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel-ticket:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+</style>
+
 <div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-end mb-5">
         <div>
-            <h2 class="fw-bold" style="color: var(--dark-blue);">My Bookings</h2>
-            <p class="text-muted small">Manage your upcoming and past trips</p>
+            <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-2 rounded-pill">Travel Center</span>
+            <h2 class="fw-bold m-0" style="color: var(--dark-navy);">My Bookings</h2>
+            <p class="text-muted m-0">Track and manage your upcoming journeys</p>
         </div>
+        <a asp-controller="Trip" asp-action="Index" class="btn btn-dark rounded-pill px-4">
+            <i class="bi bi-plus-lg me-1"></i> New Booking
+        </a>
     </div>
 
     <div class="row" id="bookings-container">
         @if (!Model.Any())
         {
-            <div class="col-12 text-center py-5 custom-card">
-                <i class="bi bi-ticket-perforated text-muted" style="font-size: 4rem;"></i>
-                <h4 class="text-muted mt-3 fw-bold">You don't have any bookings yet.</h4>
-                <a asp-controller="Trip" asp-action="Index" class="btn btn-primary-custom mt-3 text-white">Book a Trip Now</a>
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-5 p-5 shadow-sm border border-dashed">
+                    <img src="https://illustrations.popsy.co/gray/home-office.svg" style="width: 180px;" alt="Empty">
+                    <h4 class="text-dark mt-4 fw-bold">No Bookings Found</h4>
+                    <p class="text-muted mb-4">You haven't planned any trips yet. Ready to explore?</p>
+                    <a asp-controller="Trip" asp-action="Index" class="btn btn-primary px-5 py-2 rounded-pill shadow">Start Booking</a>
+                </div>
             </div>
         }
         else
         {
             @foreach (var item in Model)
             {
+                bool isCancelled = item.Status == "Cancelled";
+
                 <div class="col-md-6 col-lg-4 mb-4" id="booking-card-@item.BookingId">
-                    <div class="card custom-card h-100 p-0 overflow-hidden shadow-sm">
-                        <div class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
-                            <span class="badge bg-dark rounded-pill px-3 py-2"><i class="bi bi-hash"></i> @item.BookingId</span>
-                            <span class="fw-bold text-primary">@item.TotalPrice EGP</span>
+                    <div class="card booking-card h-100 shadow-sm @(isCancelled ? "cancelled" : "")">
+                        <div class="ticket-header d-flex justify-content-between align-items-center">
+                            <span class="small fw-bold text-muted"><i class="bi bi-qr-code me-1"></i> #@item.BookingId</span>
+                            <span class="h6 m-0 fw-bold text-primary">@item.TotalPrice EGP</span>
                         </div>
 
                         <div class="card-body p-4">
-                            <div class="mb-3">
-                                <h5 class="fw-bold text-dark d-flex align-items-center">
-                                    <i class="bi bi-geo-alt-fill text-primary me-2"></i> @item.Route
-                                </h5>
-                                <span class="badge @(item.Status == "Cancelled" ? "bg-danger" : "bg-success") small">@item.Status</span>
+                            <div class="mb-4">
+                                <div class="info-label">Route</div>
+                                <div class="route-text fw-bold">@item.Route</div>
+                                <div class="mt-2">
+                                    <span class="badge @(isCancelled ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success") rounded-pill px-3">
+                                        <i class="bi @(isCancelled ? "bi-x-circle" : "bi-check-circle") me-1"></i> @item.Status
+                                    </span>
+                                </div>
                             </div>
 
-                            <ul class="list-unstyled text-muted small mb-4">
-                                <li class="mb-2">
-                                    <i class="bi bi-calendar-event me-2"></i> Date: <strong class="text-dark">@item.Date</strong>
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-clock me-2"></i> Time: <strong class="text-dark">@item.Time</strong>
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-person-fill me-2"></i> Seats:
-                                    <strong class="text-dark">
-                                        @string.Join(", ", item.SeatNumbers)
-                                    </strong>
-                                </li>
-                            </ul>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <div class="info-label">Date</div>
+                                    <div class="info-value"><i class="bi bi-calendar3 me-1"></i> @item.Date</div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div class="info-label">Time</div>
+                                    <div class="info-value"><i class="bi bi-clock me-1"></i> @item.Time</div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="info-label">Seats Assigned</div>
+                                    <div class="info-value text-primary">
+                                        <i class="bi bi-Layers me-1"></i> @string.Join(", ", item.SeatNumbers)
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="action-btn-container text-center">
-                                @if (item.Status != "Cancelled")
+                            <div class="action-btn-container">
+                                @if (!isCancelled)
                                 {
-                                    <button onclick="confirmCancel(@item.BookingId)" class="btn btn-outline-danger w-100 rounded-pill">
-                                        <i class="bi bi-x-circle me-1"></i> Cancel Booking
+                                    <button onclick="confirmCancel(@item.BookingId)" class="btn btn-cancel-ticket w-100 rounded-pill py-2 fw-bold">
+                                        Cancel This Trip
                                     </button>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-danger p-2 w-100 rounded-pill">Cancelled</span>
+                                    <button class="btn btn-secondary disabled w-100 rounded-pill py-2 fw-bold opacity-50">
+                                        Booking Cancelled
+                                    </button>
                                 }
                             </div>
                         </div>
@@ -80,15 +160,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
 
     <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/bookingHub").build();
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/bookingHub")
+            .withAutomaticReconnect()
+            .build();
 
+        // تحديث الواجهة عند استلام إشعار إلغاء
         connection.on("ReceiveCancellation", function (bookingId) {
             const card = document.getElementById(`booking-card-${bookingId}`);
             if (card) {
-                card.style.opacity = '0.5';
+                card.classList.add('cancelled');
                 const actionContainer = card.querySelector('.action-btn-container');
+                const statusBadge = card.querySelector('.badge');
+
                 if (actionContainer) {
-                    actionContainer.innerHTML = '<span class="badge bg-danger p-2 w-100 rounded-pill">Cancelled</span>';
+                    actionContainer.innerHTML = '<button class="btn btn-secondary disabled w-100 rounded-pill py-2 fw-bold opacity-50">Booking Cancelled</button>';
+                }
+                if (statusBadge) {
+                    statusBadge.className = "badge bg-danger-subtle text-danger rounded-pill px-3";
+                    statusBadge.innerHTML = '<i class="bi bi-x-circle me-1"></i> Cancelled';
                 }
             }
         });
@@ -97,32 +187,39 @@
 
         function confirmCancel(id) {
             Swal.fire({
-                title: 'Cancel Booking?',
-                text: "Are you sure you want to cancel this trip?",
+                title: 'Are you sure?',
+                text: "You are about to cancel this booking. This action cannot be undone!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#0056b3',
-                cancelButtonColor: '#dc3545',
-                confirmButtonText: 'Yes, Cancel it',
-                cancelButtonText: 'No, Keep it',
-                background: '#ffffff',
-                borderRadius: '16px'
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it',
+                customClass: {
+                    popup: 'rounded-4',
+                    confirmButton: 'rounded-pill px-4',
+                    cancelButton: 'rounded-pill px-4'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // إظهار Loading بسيط
+                    Swal.showLoading();
+
                     $.post('/Booking/CancelBooking', { BookingId: id })
                         .done(function () {
                             Swal.fire({
-                                title: 'Cancelled!',
-                                text: 'Your booking has been cancelled successfully.',
+                                title: 'Success!',
+                                text: 'The trip has been cancelled.',
                                 icon: 'success',
-                                confirmButtonColor: '#0056b3'
+                                confirmButtonColor: '#0d6efd',
+                                timer: 2000
                             }).then(() => {
-                                // تحديث الحالة في الصفحة فوراً بدون ريلود لو مش مستخدمة SignalR للكل
-                                location.reload();
+                                
+                                if (!connection.state === "Connected") location.reload();
                             });
                         })
                         .fail(function () {
-                            Swal.fire('Error!', 'Could not cancel booking. Try again.', 'error');
+                            Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
                         });
                 }
             })

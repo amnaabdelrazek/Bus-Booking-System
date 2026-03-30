@@ -7,123 +7,137 @@
 
 <style>
     body {
-        background-color: #f4f7f6;
+        background-color: #f8fafc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* تصميم هيكل الأتوبيس */
-    .bus-wrapper {
+    /* الحاوية الرئيسية للحافلة */
+    .bus-container {
         background: #ffffff;
-        border: 2px solid #ddd;
-        border-radius: 40px 40px 20px 20px;
-        padding: 40px 20px;
-        max-width: 400px;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px 50px 20px 20px;
+        padding: 40px 25px;
+        width: 100%;
+        max-width: 380px; /* العرض المثالي لظهور المقاعد بجانب بعضها */
         margin: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        position: relative;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
-    /* مقدمة الأتوبيس */
+    /* مقدمة الحافلة */
     .bus-front {
-        border-bottom: 4px solid #eee;
-        margin-bottom: 30px;
-        padding-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        border-bottom: 2px dashed #e2e8f0;
     }
 
+    /* شبكة المقاعد - الحل السحري للمشكلة */
     .seat-grid {
         display: grid;
+        /* 5 أعمدة: مقعد، مقعد، ممر(40px)، مقعد، مقعد */
         grid-template-columns: repeat(2, 1fr) 40px repeat(2, 1fr);
-        gap: 12px;
-        text-align: center;
+        gap: 12px 8px; /* مسافة بين الصفوف والأعمدة */
+        align-items: center;
     }
 
+    /* تصميم الممر */
     .aisle {
         grid-column: 3;
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 0.6rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        writing-mode: vertical-rl;
+        text-transform: uppercase;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* تصميم الكرسي */
     .btn-seat {
         width: 100%;
         height: 50px;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-        border: 2px solid #dee2e6;
-        background: white;
+        border-radius: 10px;
+        border: 2px solid #f1f5f9;
+        background: #f8fafc;
+        color: #64748b;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 0.8rem;
     }
 
-        .btn-seat:hover:not(.disabled) {
-            border-color: #0d6efd;
-            color: #0d6efd;
-            transform: translateY(-2px);
+        .btn-seat i {
+            font-size: 1rem;
+            margin-bottom: 2px;
         }
 
-    /* الكرسي المحجوز */
-    .seat-booked {
-        background-color: #e9ecef !important;
-        color: #adb5bd !important;
-        border-color: #dee2e6 !important;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
+        .btn-seat:hover:not(.disabled):not(.seat-selected) {
+            border-color: #0d6efd;
+            color: #0d6efd;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
 
     /* الكرسي المختار */
     .seat-selected {
         background-color: #0d6efd !important;
         color: white !important;
         border-color: #0d6efd !important;
-        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
     }
 
-    /* دليل الألوان (Legend) */
-    .legend {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 25px;
-        font-size: 0.85rem;
+    /* الكرسي المحجوز */
+    .seat-booked {
+        background-color: #f1f5f9 !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        cursor: not-allowed;
+        opacity: 0.7;
     }
 
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .legend-box {
-        width: 18px;
-        height: 18px;
-        border-radius: 4px;
-    }
-
+    /* ملخص الرحلة الجانبي */
     .summary-card {
         border-radius: 20px;
         border: none;
-        overflow: hidden;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+
+    .badge-route {
+        background: #f1f5f9;
+        color: #1e293b;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
     }
 </style>
 
 <div class="container my-5">
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="card shadow-sm p-4 border-0" style="border-radius:25px;">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-7">
+            <div class="card p-4 border-0 shadow-sm" style="border-radius: 25px;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="fw-bold m-0"><i class="bi bi-bus-front me-2"></i>Select Your Seat</h3>
-                    <span class="text-muted small">Trip ID: #@Model.TripId</span>
+                    <h4 class="fw-bold m-0"><i class="bi bi-bus-front text-primary me-2"></i>Select Seats</h4>
+                    <span class="badge bg-light text-dark border">Trip #@Model.TripId</span>
                 </div>
 
-                <div class="bus-wrapper">
+                <div class="bus-container">
                     <div class="bus-front">
-                        <div class="text-muted"><i class="bi bi-door-open fs-4"></i> Entrance</div>
-                        <div class="badge bg-dark p-2">
-                            <i class="bi bi-person-badge me-1"></i> DRIVER
+                        <div class="text-muted small fw-bold"><i class="bi bi-door-open-fill fs-5"></i><br>ENTRY</div>
+                        <div class="text-center">
+                            <div class="bg-dark text-white rounded-circle mb-1 mx-auto" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+                                <i class="bi bi-person-workspace"></i>
+                            </div>
+                            <span class="small text-muted fw-bold">DRIVER</span>
                         </div>
                     </div>
 
@@ -137,88 +151,78 @@
                             {
                                 <div id="seat-@seatNum" class="btn-seat seat-booked disabled">
                                     <i class="bi bi-x-circle"></i>
+                                    <span>@seatNum</span>
                                 </div>
                             }
                             else
                             {
                                 <button id="seat-@seatNum" type="button" class="btn-seat"
                                         onclick="selectSeat(this, '@seatNum', @Model.Price)">
-                                    @seatNum
+                                    <i class="bi bi-person-fill"></i>
+                                    <span>@seatNum</span>
                                 </button>
                             }
 
+                            @* إضافة الممر بعد كل مقعدين *@
                             if (i % 2 == 0 && i % 4 != 0)
                             {
-                                <div class="aisle"></div>
+                                <div class="aisle">AISLE</div>
                             }
                         }
                     </div>
 
-                    <div class="legend border-top pt-3">
-                        <div class="legend-item">
-                            <div class="legend-box border"></div> <span>Available</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-box bg-primary"></div> <span>Selected</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-box bg-light border"></div> <span>Booked</span>
-                        </div>
+                    <div class="d-flex justify-content-center gap-3 mt-5 pt-3 border-top">
+                        <div class="small text-muted"><span class="d-inline-block bg-light border rounded-1 me-1" style="width:12px; height:12px;"></span> Free</div>
+                        <div class="small text-muted"><span class="d-inline-block bg-primary rounded-1 me-1" style="width:12px; height:12px;"></span> Selected</div>
+                        <div class="small text-muted"><span class="d-inline-block bg-secondary opacity-25 rounded-1 me-1" style="width:12px; height:12px;"></span> Taken</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow-sm sticky-top summary-card" style="top:20px;">
-                <div class="card-header bg-dark text-white p-3">
-                    <h5 class="m-0 fw-bold">Trip Summary</h5>
+            <div class="card summary-card sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white p-3 border-0">
+                    <h5 class="m-0 fw-bold"><i class="bi bi-ticket-perforated me-2"></i>Booking Summary</h5>
                 </div>
                 <div class="card-body p-4">
-                    <div class="mb-4">
-                        <label class="text-muted small d-block">ROUTE</label>
-                        <div class="d-flex align-items-center">
-                            <span class="fw-bold fs-5">@Model.FromCity</span>
-                            <i class="bi bi-arrow-right mx-2 text-primary"></i>
-                            <span class="fw-bold fs-5">@Model.ToCity</span>
+                    <div class="badge-route mb-4 text-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>@Model.FromCity</span>
+                            <i class="bi bi-arrow-right text-primary"></i>
+                            <span>@Model.ToCity</span>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-4">
+                    <div class="row g-2 mb-4">
                         <div class="col-6">
                             <label class="text-muted small d-block">DATE</label>
-                            <span class="fw-bold small"><i class="bi bi-calendar-event me-1"></i>@Model.Date.ToString("dd MMM, yyyy")</span>
+                            <span class="fw-bold small">@Model.Date.ToString("dd MMM, yyyy")</span>
                         </div>
                         <div class="col-6">
-                            <label class="text-muted small d-block">TIME</label>
-                            <span class="fw-bold small"><i class="bi bi-clock me-1"></i>@Model.Time.ToString("hh:mm tt")</span>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-light rounded-3 mb-4">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Price per seat:</span>
-                            <span class="fw-bold text-dark">$@Model.Price</span>
+                            <label class="text-muted small d-block">DEPARTURE</label>
+                            <span class="fw-bold small">@Model.Time.ToString("hh:mm tt")</span>
                         </div>
                     </div>
 
                     <div id="selectionSummary" style="display:none;">
-                        <hr>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Selected Seats:</span>
-                            <span id="selectedSeatsList" class="badge bg-primary fs-6"></span>
+                        <div class="p-3 bg-light rounded-3 mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">Selected Seats</span>
+                                <span id="selectedSeatsList" class="fw-bold text-primary"></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h6 m-0 fw-bold">Total Price</span>
+                                <span class="h4 m-0 fw-bold text-primary">$<span id="totalPriceDisplay">0</span></span>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span class="h6 m-0 fw-bold">Total Amount:</span>
-                            <span class="h4 m-0 fw-bold text-primary">$<span id="totalPriceDisplay">0</span></span>
-                        </div>
-                        <button onclick="goToConfirmation()" class="btn btn-primary w-100 mt-4 py-3 fw-bold shadow-sm">
-                            Confirm Booking <i class="bi bi-chevron-right ms-1"></i>
+                        <button onclick="goToConfirmation()" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
+                            Continue to Payment <i class="bi bi-chevron-right ms-1"></i>
                         </button>
                     </div>
 
-                    <div id="noSelectionMsg" class="text-center text-muted small py-3">
-                        <i class="bi bi-info-circle me-1"></i> Please select a seat to continue
+                    <div id="noSelectionMsg" class="text-center py-4 text-muted border border-dashed rounded-3">
+                        <p class="small m-0">Please select at least one seat to proceed with your booking.</p>
                     </div>
                 </div>
             </div>
@@ -232,45 +236,39 @@
 <script>
     let selectedSeats = [];
 
-    const connection = new signalR.HubConnectionBuilder().withUrl("/bookingHub").build();
-    connection.start();
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/bookingHub")
+        .withAutomaticReconnect()
+        .build();
 
     connection.on("UpdateSeatStatus", function (tripId, seatIds, status) {
         if (tripId == "@Model.TripId") {
             seatIds.forEach(id => {
                 const $btn = $(`#seat-${id}`);
-                if ($btn.length > 0) {
-                    if (status === "Booked") {
-                        $btn.addClass("seat-booked disabled")
-                            .removeClass("seat-selected")
-                            .html('<i class="bi bi-x-circle"></i>')
-                            .off("click");
-
-                        selectedSeats = selectedSeats.filter(s => s !== id.toString());
-                    }
-                    else if (status === "Available") {
-                        $btn.removeClass("seat-booked disabled")
-                            .text(id)
-                            .off("click").on("click", function () {
-                                selectSeat(this, id.toString(), @Model.Price);
-                            });
-                    }
+                if (status === "Booked") {
+                    $btn.addClass("seat-booked disabled").removeClass("seat-selected")
+                        .html('<i class="bi bi-x-circle"></i><span>' + id + '</span>')
+                        .prop("disabled", true);
+                    selectedSeats = selectedSeats.filter(s => s !== id.toString());
+                } else {
+                    $btn.removeClass("seat-booked disabled").prop("disabled", false)
+                        .html('<i class="bi bi-person-fill"></i><span>' + id + '</span>');
                 }
             });
             updateUI(@Model.Price);
         }
     });
 
+    connection.start();
+
     function selectSeat(button, seatId, price) {
         const $btn = $(button);
-
         if (selectedSeats.includes(seatId)) {
             selectedSeats = selectedSeats.filter(s => s !== seatId);
             $btn.removeClass("seat-selected");
         } else {
-            // اختياري: تحديد أقصى عدد للمقاعد (مثلاً 6)
             if (selectedSeats.length >= 6) {
-                alert("You can only select up to 6 seats.");
+                alert("Maximum 6 seats allowed");
                 return;
             }
             selectedSeats.push(seatId);

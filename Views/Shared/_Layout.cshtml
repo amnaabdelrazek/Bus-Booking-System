@@ -3,24 +3,25 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Bus Booking</title>
+    <title>@ViewData["Title"] - BusBooking</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --primary-blue: #0056b3;
-            --dark-blue: #0d2b4d;
-            --light-blue: #f0f4f8;
-            --accent-blue: #00a8ff;
-            --text-dark: #212529;
+            --primary-blue: #2563eb;
+            --dark-blue: #0f172a;
+            --light-blue: #f8fafc;
+            --accent-sky: #38bdf8;
+            --text-main: #334155;
         }
 
         body {
             background-color: var(--light-blue);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-dark);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -28,160 +29,201 @@
 
         /* Navbar Styling */
         .navbar-custom {
-            background-color: var(--dark-blue);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 0;
+            transition: all 0.3s ease;
         }
-        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
-            color: #ffffff !important;
+
+        .navbar-brand {
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
             font-weight: 500;
-        }
-        .navbar-custom .nav-link:hover {
-            color: var(--accent-blue) !important;
-        }
-
-        /* Card & Container Styling */
-        .custom-card {
-            background: #ffffff;
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 8px 24px rgba(13, 43, 77, 0.08);
-            padding: 30px;
+            color: rgba(255,255,255,0.8) !important;
+            margin: 0 5px;
+            transition: 0.3s;
         }
 
-        /* Buttons */
-        .btn-primary-custom {
-            background-color: var(--primary-blue);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .btn-primary-custom:hover {
-            background-color: var(--dark-blue);
-            transform: translateY(-2px);
-            color: white;
-        }
-        .btn-dark-custom {
-            background-color: var(--dark-blue);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .btn-dark-custom:hover {
-            background-color: #000;
-            color: white;
+            .nav-link:hover {
+                color: var(--accent-sky) !important;
+            }
+
+            .nav-link.active {
+                color: white !important;
+                border-bottom: 2px solid var(--accent-sky);
+            }
+
+        /* Hero-like spacing for main content */
+        main {
+            flex: 1;
+            padding-top: 20px;
         }
 
-        /* Inputs */
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            padding: 12px 15px;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 0.25rem rgba(0, 168, 255, 0.25);
-        }
-
-        main { flex: 1; }
-        
+        /* Footer Styling */
         footer {
             background-color: #ffffff;
-            border-top: 2px solid #e9ecef;
+            border-top: 1px solid #e2e8f0;
+            padding: 2rem 0;
+        }
+
+        .footer-logo {
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        /* Buttons Custom */
+        .btn-auth {
+            padding: 8px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-login {
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-register {
+            background-color: var(--primary-blue);
+            border: none;
+            color: white !important;
+        }
+
+            .btn-register:hover {
+                background-color: var(--dark-blue);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            }
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 8px 16px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom mb-4">
-            <div class="container-fluid container">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-bus-front"></i> BusBooking
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+            <div class="container">
+                <a class="navbar-brand fw-bold d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="bg-primary p-2 rounded-3 me-2 d-flex">
+                        <i class="bi bi-bus-front-fill text-white fs-5"></i>
+                    </div>
+                    <span>Bus<span class="text-info">Booking</span></span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation" style="border-color: rgba(255,255,255,0.5);">
-                    <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Trip" asp-action="Index">Trips</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trip" ? "active" : "")" asp-controller="Trip" asp-action="Index">Find Trips</a>
                         </li>
-                        
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="MyBookings">My Bookings</a>
+                                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyBookings" ? "active" : "")" asp-controller="Booking" asp-action="MyBookings">My Bookings</a>
                             </li>
-                            
+
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-warning fw-bold" asp-area="" asp-controller="Admin" asp-action="Index">
-                                        <i class="bi bi-shield-lock-fill"></i> Admin Dashboard
+                                    <a class="nav-link text-info fw-bold" asp-controller="Admin" asp-action="Index">
+                                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
                                     </a>
                                 </li>
                             }
                         }
                     </ul>
-                    
-                    <ul class="navbar-nav">
+
+                    <div class="d-flex align-items-center">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDrop" data-bs-toggle="dropdown">
+                                    <div class="bg-secondary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                        <i class="bi bi-person text-white"></i>
+                                    </div>
+                                    @User.Identity.Name
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">Profile</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index"><i class="bi bi-person me-2"></i> Profile</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                            <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
                                         </form>
                                     </li>
                                 </ul>
-                            </li>
+                            </div>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item ms-2">
-                                <a class="btn btn-outline-light rounded-pill px-3 py-1 mt-1" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
+                            <a class="nav-link btn-login me-3" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="btn btn-auth btn-register shadow-sm" asp-controller="Account" asp-action="Register">Get Started</a>
                         }
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="py-4 mt-5">
+    <main role="main">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="text-muted small mb-0 fw-bold">
-                        <i class="bi bi-geo-alt me-1 text-primary"></i> 123 Transit Ave, City
-                    </p>
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="mt-auto">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-4 text-center text-md-start">
+                    <a class="footer-logo d-block mb-3" href="#">
+                        <i class="bi bi-bus-front-fill text-primary me-2"></i>BusBooking
+                    </a>
+                    <p class="text-muted small">Your reliable partner for safe and comfortable intercity travels. Book your seat in seconds.</p>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="text-muted small mb-0">
-                        © @DateTime.Now.Year BusBooking. All rights reserved.
-                    </p>
+                <div class="col-md-4 text-center">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Support Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Terms of Service</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Privacy Policy</a></li>
+                    </ul>
                 </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <h6 class="fw-bold mb-3">Contact Us</h6>
+                    <p class="text-muted small mb-1"><i class="bi bi-envelope me-2"></i>support@busbooking.com</p>
+                    <p class="text-muted small"><i class="bi bi-telephone me-2"></i>+1 234 567 890</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-primary me-3 fs-5"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-info me-3 fs-5"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-danger fs-5"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 text-muted opacity-25">
+            <div class="text-center">
+                <p class="text-muted small mb-0">© @DateTime.Now.Year BusBooking. Built with <i class="bi bi-heart-fill text-danger mx-1"></i> for travelers.</p>
             </div>
         </div>
     </footer>

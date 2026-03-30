@@ -5,42 +5,116 @@
     ViewData["Title"] = "Home Page";
 }
 
-<section class="d-flex align-items-center rounded-4 shadow-sm overflow-hidden mt-2" style="min-height: 80vh; background: linear-gradient(135deg, #0d2b4d 0%, #0056b3 100%);">
+<style>
+    /* تحسين شكل الكارت ليتناسب مع التصميم الجديد */
+    .home-search-card {
+        background: #ffffff;
+        border-radius: 24px; /* زوايا أكثر نعومة */
+        border: none;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* ظل أعمق ليعطي بعداً */
+        padding: 35px;
+        transition: transform 0.3s ease;
+    }
+
+    .form-label {
+        color: #64748b;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    /* تأثيرات الأزرار */
+    .btn-search {
+        background: var(--primary-blue);
+        border: none;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-search:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+    .hero-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* شكل جمالي في الخلفية */
+        .hero-gradient::after {
+            content: "";
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+</style>
+
+<section class="hero-gradient d-flex align-items-center shadow-lg mt-3" style="min-height: 75vh;">
     <div class="container py-5">
         <div class="row align-items-center">
-
-            <div class="col-md-6 text-white text-center text-md-start mb-5 mb-md-0">
-                <h1 class="display-4 fw-bold mb-3">Find Your Trip <i class="bi bi-bus-front-fill"></i></h1>
-                <p class="lead" style="color: #e8f0fe;">Book bus tickets easily, securely, and travel comfortably across the country.</p>
+            <div class="col-lg-6 text-white text-center text-lg-start mb-5 mb-lg-0 px-4">
+                <span class="badge bg-info bg-opacity-25 text-info mb-3 px-3 py-2 rounded-pill fw-bold" style="letter-spacing: 1px;">
+                    SAFE & RELIABLE TRAVEL
+                </span>
+                <h1 class="display-3 fw-bold mb-3" style="line-height: 1.2;">
+                    Travel Smarter, <br />
+                    <span class="text-info text-gradient">Book Faster.</span>
+                </h1>
+                <p class="lead mb-4" style="color: #cbd5e1; max-width: 500px;">
+                    Experience the most comfortable bus journeys across the country. Best prices guaranteed.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-4 mt-2 text-white-50">
+                    <div class="d-flex align-items-center small">
+                        <i class="bi bi-check-circle-fill text-info me-2"></i> Easy Booking
+                    </div>
+                    <div class="d-flex align-items-center small">
+                        <i class="bi bi-check-circle-fill text-info me-2"></i> Secure Payment
+                    </div>
+                    <div class="d-flex align-items-center small">
+                        <i class="bi bi-check-circle-fill text-info me-2"></i> 24/7 Support
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="custom-card">
-                    <h4 class="text-center fw-bold mb-4" style="color: var(--dark-blue);">Book Your Ticket</h4>
+            <div class="col-lg-5 offset-lg-1 px-4">
+                <div class="home-search-card">
+                    <h4 class="fw-bold mb-4" style="color: #0f172a;">Plan Your Trip</h4>
                     <form asp-action="Search" method="get">
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-muted small"><i class="bi bi-geo-alt"></i> From</label>
-                            <select asp-for="DepartureCityId" class="form-select" asp-items="@(new SelectList(Model.Cities,"Id","Name"))">
-                                <option value="">Select City</option>
+                            <label class="form-label fw-bold"><i class="bi bi-geo-alt me-1"></i> From</label>
+                            <select asp-for="DepartureCityId" class="form-select border-0 bg-light py-3 rounded-3" asp-items="@(new SelectList(Model.Cities,"Id","Name"))">
+                                <option value="">Departure City</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-muted small"><i class="bi bi-pin-map"></i> To</label>
-                            <select asp-for="ArrivalCityId" class="form-select" asp-items="@(new SelectList(Model.Cities,"Id","Name"))">
-                                <option value="">Select City</option>
+                            <label class="form-label fw-bold"><i class="bi bi-pin-map me-1"></i> To</label>
+                            <select asp-for="ArrivalCityId" class="form-select border-0 bg-light py-3 rounded-3" asp-items="@(new SelectList(Model.Cities,"Id","Name"))">
+                                <option value="">Arrival City</option>
                             </select>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small"><i class="bi bi-calendar-event"></i> Travel Date</label>
-                            <input asp-for="TravelDate" type="date" class="form-control"
+                            <label class="form-label fw-bold"><i class="bi bi-calendar-event me-1"></i> Travel Date</label>
+                            <input asp-for="TravelDate" type="date" class="form-control border-0 bg-light py-3 rounded-3"
                                    value="@DateTime.Now.ToString("yyyy-MM-dd")"
                                    min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
 
-                        <button class="btn btn-primary-custom w-100 text-white shadow-sm">
-                            <i class="bi bi-search me-2"></i> Search Trips
+                        <button class="btn btn-search btn-primary w-100 text-white shadow-sm d-flex align-items-center justify-content-center">
+                            <i class="bi bi-search me-2"></i> Search Available Trips
                         </button>
                     </form>
                 </div>
@@ -48,3 +122,29 @@
         </div>
     </div>
 </section>
+
+<div class="container py-5 mt-4">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm border-0 h-100">
+                <div class="text-primary fs-2 mb-3"><i class="bi bi-shield-check"></i></div>
+                <h5 class="fw-bold">Safe Travels</h5>
+                <p class="text-muted small">We prioritize your safety with verified drivers and well-maintained buses.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm border-0 h-100">
+                <div class="text-primary fs-2 mb-3"><i class="bi bi-lightning-charge"></i></div>
+                <h5 class="fw-bold">Instant Booking</h5>
+                <p class="text-muted small">Get your ticket instantly on your email and phone. No more waiting lines.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm border-0 h-100">
+                <div class="text-primary fs-2 mb-3"><i class="bi bi-wallet2"></i></div>
+                <h5 class="fw-bold">Best Prices</h5>
+                <p class="text-muted small">Affordable travel options for every budget without compromising quality.</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,99 +4,136 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold text-muted"><i class="bi bi-calendar-event me-2"></i>Scheduled Trips</h3>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Schedule New Trip</a>
-</div>
+<style>
+    :root {
+        --primary-blue: #0056b3;
+        --dark-blue: #0d2b4d;
+    }
 
-@if (TempData["SuccessMsg"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMsg"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    .custom-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 24px rgba(13, 43, 77, 0.08);
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--dark-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: var(--dark-blue);">
+                <i class="bi bi-calendar-event me-2 text-primary"></i>Scheduled Trips
+            </h3>
+            <p class="text-muted small">Manage and monitor all bus journeys</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary-custom shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Schedule New Trip
+        </a>
     </div>
-}
 
-<div class="card border-0 shadow-sm rounded-3">
-    <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th class="ps-4">Route</th>
-                    <th>Date & Time</th>
-                    <th>Bus Details</th>
-                    <th>Status</th>
-                    <th class="text-end pe-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+    @if (TempData["SuccessMsg"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMsg"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="custom-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--dark-blue); color: white;">
                     <tr>
-                        <td class="ps-4">
-                            <div class="fw-bold text-dark">
-                                @item.BusRoute?.OriginCity?.Name <i class="bi bi-arrow-right text-muted mx-1"></i> @item.BusRoute?.DestinationCity?.Name
-                            </div>
-                        </td>
-                        <td>
-                            <div class="fw-bold">@item.TravelDate.ToString("MMM dd, yyyy")</div>
-                            <small class="text-muted">
-                                <i class="bi bi-clock"></i> @item.DepartureTime.ToString("hh:mm tt") - @item.ArrivalTime.ToString("hh:mm tt")
-                            </small>
-                        </td>
-                        <td>
-                            <span class="badge bg-dark">@item.Bus?.BusNum</span>
-                            <br />
-                            <small class="@(item.AvailableSeats < 5 ? "text-danger fw-bold" : "text-success")">
-                                @item.AvailableSeats / @item.Bus?.TotalSeats Seats Left
-                            </small>
-                        </td>
-                        <td>
-                            @if (item.Status == Bus_Booking_System.Models.TripStatus.OpenForBooking)
-                            {
-                                <span class="badge bg-success-subtle text-success border border-success"><i class="bi bi-door-open"></i> Open</span>
-                            }
-                            else if (item.Status == Bus_Booking_System.Models.TripStatus.Completed)
-                            {
-                                <span class="badge bg-secondary-subtle text-secondary border border-secondary"><i class="bi bi-check2-all"></i> Completed</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger-subtle text-danger border border-danger"><i class="bi bi-x-circle"></i> Cancelled</span>
-                            }
-                        </td>
-                        <td class="text-end pe-4">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this trip?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
+                        <th class="ps-4 py-3 fw-normal">Route</th>
+                        <th class="py-3 fw-normal">Date & Time</th>
+                        <th class="py-3 fw-normal">Bus & Seats</th>
+                        <th class="py-3 fw-normal">Status</th>
+                        <th class="text-end pe-4 py-3 fw-normal">Actions</th>
                     </tr>
-                }
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="5" class="text-center py-4 text-muted">No trips scheduled yet.</td></tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="border-top-0">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">
+                                    @item.BusRoute?.OriginCity?.Name
+                                    <i class="bi bi-arrow-right text-primary mx-1"></i>
+                                    @item.BusRoute?.DestinationCity?.Name
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.TravelDate.ToString("MMM dd, yyyy")</div>
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>@item.DepartureTime.ToString("hh:mm tt")</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-dark mb-1">@item.Bus?.BusNum</span><br />
+                                <small class="@(item.AvailableSeats < 5 ? "text-danger fw-bold" : "text-success")">
+                                    @item.AvailableSeats / @item.Bus?.TotalSeats Left
+                                </small>
+                            </td>
+                            <td>
+                                @if (item.Status == Bus_Booking_System.Models.TripStatus.OpenForBooking)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success px-3">Open</span>
+                                }
+                                else if (item.Status == Bus_Booking_System.Models.TripStatus.Completed)
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary px-3">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger px-3">Cancelled</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-circle me-1" style="width: 32px; height: 32px; padding: 4px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 32px; height: 32px; padding: 4px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <style>
     .bg-success-subtle {
-        background-color: #d1e7dd;
+        background-color: #e8f5e9 !important;
     }
 
     .bg-danger-subtle {
-        background-color: #f8d7da;
+        background-color: #ffebee !important;
     }
 
     .bg-secondary-subtle {
-        background-color: #e2e3e5;
+        background-color: #f5f5f5 !important;
     }
 </style>

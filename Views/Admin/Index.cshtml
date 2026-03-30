@@ -1,45 +1,205 @@
 ﻿@{
-    ViewData["Title"] = "Dashboard";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml"; 
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="row g-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-ticket-detailed display-4 text-primary mb-2"></i>
-                <h5 class="text-muted">Active Bookings</h5>
-                <h2 class="fw-bold" id="totalBookings">@ViewBag.TotalBookings</h2>
-            </div>
-        </div>
+<style>
+    :root {
+        --primary-blue: #4e73df;
+        --success-green: #1cc88a;
+        --warning-yellow: #f6c23e;
+        --danger-red: #e74a3b;
+        --dark-blue: #0d2b4d;
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --border-color: #f1f2f6;
+    }
+
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-header h3 {
+        letter-spacing: -0.5px;
+        color: var(--dark-blue);
+    }
+
+    /* كروت أكبر وتوسيط المحتوى */
+    .stat-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px; /* زوايا أنعم */
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* توسيط أفقي */
+        justify-content: center; /* توسيط رأسي */
+        padding: 3rem 1rem; /* زيادة الحشو الداخلي لجعل الكارت أكبر */
+    }
+
+        .stat-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        /* الشريط الملون العلوي بدلاً من الجانبي لإعطاء شكل متناسق مع التوسيط */
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+        }
+
+    .accent-primary::before {
+        background: var(--primary-blue);
+    }
+
+    .accent-success::before {
+        background: var(--success-green);
+    }
+
+    .accent-warning::before {
+        background: var(--warning-yellow);
+    }
+
+    .accent-danger::before {
+        background: var(--danger-red);
+    }
+
+    /* أيقونة أكبر وفي المنتصف */
+    .icon-box {
+        width: 80px; /* حجم أكبر */
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem; /* أيقونة أوضح */
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover .icon-box {
+        transform: scale(1.1) rotate(-5deg);
+    }
+
+    .bg-soft-primary {
+        background-color: #eef2ff;
+        color: var(--primary-blue);
+    }
+
+    .bg-soft-success {
+        background-color: #e6fffa;
+        color: var(--success-green);
+    }
+
+    .bg-soft-warning {
+        background-color: #fffaf0;
+        color: var(--warning-yellow);
+    }
+
+    .bg-soft-danger {
+        background-color: #fff5f5;
+        color: var(--danger-red);
+    }
+
+    /* نصوص أكبر */
+    .stat-value {
+        font-size: 2.8rem; /* رقم ضخم وواضح */
+        font-weight: 800;
+        color: var(--dark-blue);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: #718096;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+    }
+
+    @@keyframes pulse-update {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+            color: var(--primary-blue);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .value-updated {
+        animation: pulse-update 0.6s ease-in-out;
+    }
+</style>
+
+<div class="container-fluid py-5">
+    <div class="dashboard-header mb-5 text-center">
+        <h3 class="fw-bold display-6 mb-2">System Administration</h3>
+        <p class="text-secondary">Global statistics and live fleet monitoring</p>
     </div>
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-calendar-event display-4 text-success mb-2"></i>
-                <h5 class="text-muted">Active Trips</h5>
-                <h2 class="fw-bold" id="activeTrips">@ViewBag.ActiveTrips</h2>
+    <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-4 justify-content-center">
+
+        <div class="col">
+            <div class="card stat-card accent-primary shadow-sm">
+                <div class="icon-box bg-soft-primary">
+                    <i class="bi bi-ticket-perforated"></i>
+                </div>
+                <h2 class="stat-value" id="totalBookings">@ViewBag.TotalBookings</h2>
+                <span class="stat-label">Active Bookings</span>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-truck display-4 text-warning mb-2"></i>
-                <h5 class="text-muted">Total Buses</h5>
-                <h2 class="fw-bold" id="totalBuses">@ViewBag.TotalBuses</h2>
+        <div class="col">
+            <div class="card stat-card accent-success shadow-sm">
+                <div class="icon-box bg-soft-success">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <h2 class="stat-value" id="activeTrips">@ViewBag.ActiveTrips</h2>
+                <span class="stat-label">Scheduled Trips</span>
             </div>
         </div>
+
+        <div class="col">
+            <div class="card stat-card accent-warning shadow-sm">
+                <div class="icon-box bg-soft-warning">
+                    <i class="bi bi-bus-front"></i>
+                </div>
+                <h2 class="stat-value" id="totalBuses">@ViewBag.TotalBuses</h2>
+                <span class="stat-label">Total Fleet</span>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card stat-card accent-danger shadow-sm">
+                <div class="icon-box bg-soft-danger">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h2 class="stat-value" id="totalUsers">@ViewBag.TotalUsers</h2>
+                <span class="stat-label">Registered Users</span>
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body text-center py-4">
-                <i class="bi bi-people display-4 text-danger mb-2"></i>
-                <h5 class="text-muted">Total Users</h5>
-                <h2 class="fw-bold" id="totalUsers">@ViewBag.TotalUsers</h2>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div class="d-inline-block px-4 py-2 bg-white rounded-pill border shadow-sm">
+                <small class="text-muted">
+                    <span class="spinner-grow spinner-grow-sm text-primary me-2" role="status"></span>
+                    Live Dashboard: Connected via SignalR
+                </small>
             </div>
         </div>
     </div>
@@ -47,46 +207,34 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
-
     <script>
-        var connection = new signalR.HubConnectionBuilder().withUrl("/dashboardHub").build();
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/dashboardHub")
+            .withAutomaticReconnect()
+            .build();
 
-        connection.on("ReceiveStatsUpdate", function () {
-            loadDashboardStats();
-        });
+        connection.on("ReceiveStatsUpdate", () => loadDashboardStats());
 
         function loadDashboardStats() {
             fetch('/Admin/GetDashboardStats')
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
-                    document.getElementById("totalBuses").innerText = data.buses;
-                    document.getElementById("activeTrips").innerText = data.trips;
-                    document.getElementById("totalUsers").innerText = data.users;
-                    document.getElementById("totalBookings").innerText = data.bookings;
-
-                    highlightChange("totalBookings");
-                    highlightChange("activeTrips");
-                    highlightChange("totalBuses");
-                    highlightChange("totalUsers");
-                })
-                .catch(error => console.error('Error fetching new stats:', error));
+                    updateValue("totalBookings", data.bookings);
+                    updateValue("activeTrips", data.trips);
+                    updateValue("totalBuses", data.buses);
+                    updateValue("totalUsers", data.users);
+                });
         }
 
-        connection.start().then(function () {
-            console.log("🟢 SignalR Ready! Waiting for updates from other browsers...");
-        }).catch(function (error) {
-            console.error("SignalR connection error:", error);
-        });
-
-        function highlightChange(elementId) {
-            var el = document.getElementById(elementId);
-            if(el) {
-                el.style.transition = "color 0.4s ease-in-out";
-                el.style.color = "#198754";
-                setTimeout(function () {
-                    el.style.color = "";
-                }, 800);
+        function updateValue(id, val) {
+            const el = document.getElementById(id);
+            if (el && el.innerText != val) {
+                el.classList.add('value-updated');
+                el.innerText = val;
+                setTimeout(() => el.classList.remove('value-updated'), 600);
             }
         }
+
+        connection.start().catch(err => console.error(err));
     </script>
 }

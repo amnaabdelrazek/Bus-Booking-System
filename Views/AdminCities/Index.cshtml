@@ -4,48 +4,109 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold text-muted">Operating Cities</h3>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add New City</a>
-</div>
+<style>
+    :root {
+        --primary-blue: #0056b3;
+        --dark-blue: #0d2b4d;
+    }
 
-@if (TempData["SuccessMsg"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMsg"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    .custom-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 24px rgba(13, 43, 77, 0.08);
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--dark-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: var(--dark-blue);">
+                <i class="bi bi-geo-alt me-2 text-primary"></i>Operating Cities
+            </h3>
+            <p class="text-muted small">Manage locations where your buses operate</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary-custom shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Add New City
+        </a>
     </div>
-}
 
-<div class="card border-0 shadow-sm rounded-3" style="max-width: 800px;">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th class="ps-4">City Name</th>
-                    <th>Added On</th>
-                    <th class="text-end pe-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+    @if (TempData["SuccessMsg"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMsg"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="custom-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--dark-blue); color: white;">
                     <tr>
-                        <td class="ps-4 fw-bold">@item.Name</td>
-                        <td class="text-muted">@item.CreatedAt.ToString("MMM dd, yyyy")</td>
-                        <td class="text-end pe-4">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this city?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                            </form>
-                        </td>
+                        <th class="ps-4 py-3 fw-normal">City Information</th>
+                        <th class="py-3 fw-normal">Created Date</th>
+                        <th class="text-end pe-4 py-3 fw-normal">Actions</th>
                     </tr>
-                }
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="3" class="text-center py-4 text-muted">No cities added yet.</td></tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="border-top-0">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold text-dark">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px; color: var(--primary-blue);">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                    </div>
+                                    @item.Name
+                                </div>
+                            </td>
+                            <td class="text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i> @item.CreatedAt.ToString("MMM dd, yyyy")
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-circle me-1" title="Edit City" style="width: 32px; height: 32px; padding: 4px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this city?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" title="Delete City" style="width: 32px; height: 32px; padding: 4px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-5">
+                                <i class="bi bi-geo-alt text-muted display-4 d-block mb-3"></i>
+                                <span class="text-muted fw-bold">No cities added yet.</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

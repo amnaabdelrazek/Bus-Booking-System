@@ -4,69 +4,93 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="card border-0 shadow-sm rounded-3" style="max-width: 800px;">
-    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-        <h4 class="fw-bold text-muted"><i class="bi bi-pencil-square me-2"></i>Edit Scheduled Trip</h4>
-        <div class="alert alert-warning mt-2 py-2 small">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Warning:</strong> Changing the Bus or Route for a trip that already has bookings may cause data errors.
-        </div>
-    </div>
-    <div class="card-body p-4">
-        <form asp-action="Edit">
-            <input type="hidden" asp-for="Id" />
-
-            <div class="row mb-4">
-                <div class="col-md-7">
-                    <label asp-for="BusRouteId" class="form-label fw-bold">Travel Route</label>
-                    <select asp-for="BusRouteId" asp-items="Model.RoutesList" class="form-select"></select>
-                    <span asp-validation-for="BusRouteId" class="text-danger small"></span>
-                </div>
-                <div class="col-md-5">
-                    <label asp-for="BusId" class="form-label fw-bold">Assigned Bus</label>
-                    <select asp-for="BusId" asp-items="Model.BusesList" class="form-select"></select>
-                    <span asp-validation-for="BusId" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <label asp-for="TravelDate" class="form-label fw-bold">Travel Date</label>
-                    <input asp-for="TravelDate" class="form-control" type="date" />
-                    <span asp-validation-for="TravelDate" class="text-danger small"></span>
-                </div>
-                <div class="col-md-4">
-                    <label asp-for="DepartureTime" class="form-label fw-bold">Departure Time</label>
-                    <input asp-for="DepartureTime" class="form-control" type="time" />
-                    <span asp-validation-for="DepartureTime" class="text-danger small"></span>
-                </div>
-                <div class="col-md-4">
-                    <label asp-for="ArrivalTime" class="form-label fw-bold">Arrival Time</label>
-                    <input asp-for="ArrivalTime" class="form-control" type="time" />
-                    <span asp-validation-for="ArrivalTime" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label asp-for="Status" class="form-label fw-bold">Trip Status</label>
-                <select asp-for="Status" class="form-select fw-bold" style="max-width: 250px;">
-                    <option value="0" class="text-success">Open For Booking</option>
-                    <option value="1" class="text-danger">Cancelled</option>
-                    <option value="2" class="text-secondary">Completed</option>
-                </select>
-                <span asp-validation-for="Status" class="text-danger small"></span>
-            </div>
-
-            <div class="d-flex justify-content-between border-top pt-4">
-                <a asp-action="Index" class="btn btn-light">Cancel</a>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save Changes</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<style>
+    :root {
+        --primary-blue: #0056b3;
+        --dark-blue: #0d2b4d;
     }
 
-}
+    .custom-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 24px rgba(13, 43, 77, 0.08);
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            color: white;
+        }
+</style>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="custom-card w-100 p-0 overflow-hidden" style="max-width: 800px;">
+        <div class="p-4 border-bottom text-center" style="background-color: var(--dark-blue); color: white;">
+            <i class="bi bi-pencil-square display-6 mb-2 d-block text-white opacity-75"></i>
+            <h4 class="fw-bold mb-0">Edit Scheduled Trip</h4>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <div class="alert alert-warning border-0 shadow-sm mb-4 small">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Warning:</strong> Changing core details for a trip with active bookings may impact data integrity.
+            </div>
+
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row mb-4">
+                    <div class="col-md-7">
+                        <label asp-for="BusRouteId" class="form-label fw-bold text-muted small text-uppercase">Travel Route</label>
+                        <select asp-for="BusRouteId" asp-items="Model.RoutesList" class="form-select" style="height: 45px;"></select>
+                        <span asp-validation-for="BusRouteId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                    <div class="col-md-5">
+                        <label asp-for="BusId" class="form-label fw-bold text-muted small text-uppercase">Assigned Bus</label>
+                        <select asp-for="BusId" asp-items="Model.BusesList" class="form-select" style="height: 45px;"></select>
+                        <span asp-validation-for="BusId" class="text-danger small mt-1 d-block"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label asp-for="TravelDate" class="form-label fw-bold text-muted small text-uppercase">Travel Date</label>
+                        <input asp-for="TravelDate" class="form-control" type="date" style="height: 45px;" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DepartureTime" class="form-label fw-bold text-muted small text-uppercase">Departure</label>
+                        <input asp-for="DepartureTime" class="form-control" type="time" style="height: 45px;" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ArrivalTime" class="form-label fw-bold text-muted small text-uppercase">Arrival</label>
+                        <input asp-for="ArrivalTime" class="form-control" type="time" style="height: 45px;" />
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label asp-for="Status" class="form-label fw-bold text-muted small text-uppercase">Trip Status</label>
+                    <select asp-for="Status" class="form-select fw-bold" style="height: 45px; max-width: 250px;">
+                        <option value="0">Open For Booking</option>
+                        <option value="1">Cancelled</option>
+                        <option value="2">Completed</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-3 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-light fw-bold w-50 py-2" style="border-radius: 8px; color: #6c757d;">Cancel</a>
+                    <button type="submit" class="btn btn-primary-custom w-50 py-2"><i class="bi bi-save me-2"></i>Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

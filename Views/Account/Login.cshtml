@@ -4,51 +4,139 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="d-flex justify-content-center align-items-center" style="min-height: 75vh;">
-    <div class="custom-card w-100" style="max-width: 450px;">
+<style>
+    /* تحسين الكارت الخاص بتسجيل الدخول */
+    .login-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+        padding: 40px;
+    }
+
+    /* تحسين شكل حقول الإدخال */
+    .input-group-custom {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background-color: #f8fafc;
+    }
+
+        .input-group-custom:focus-within {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background-color: #ffffff;
+        }
+
+        .input-group-custom .form-control {
+            border: none !important;
+            background: transparent !important;
+            padding: 12px 15px;
+            box-shadow: none !important;
+        }
+
+        .input-group-custom .input-group-text {
+            background: transparent !important;
+            border: none !important;
+            color: #94a3b8;
+            padding-left: 15px;
+            padding-right: 10px;
+        }
+
+    /* تحسين الزر */
+    .btn-login {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+        .btn-login:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
+
+    /* شكل جمالي في الخلفية */
+    .login-wrapper {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .login-wrapper::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, rgba(255,255,255,0) 70%);
+            top: -50px;
+            left: -50px;
+            z-index: -1;
+        }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card w-100 shadow-lg" style="max-width: 450px;">
         <div class="text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--dark-blue);">Welcome Back!</h2>
-            <p class="text-muted">Please sign in to your account.</p>
+            <div class="bg-primary bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+                <i class="bi bi-person-lock text-primary fs-2"></i>
+            </div>
+            <h2 class="fw-bold text-dark">Welcome Back</h2>
+            <p class="text-muted small">Enter your credentials to access your trips</p>
         </div>
 
         <form asp-action="Login" method="post">
-            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any()))
+            {
+                <div class="alert alert-danger border-0 small rounded-3 mb-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Invalid login attempt.
+                </div>
+            }
 
             <div class="mb-3">
-                <label class="form-label text-muted small fw-bold">User Name</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-                    <input asp-for="UserName" class="form-control border-start-0 ps-0" placeholder="Enter your User Name" />
+                <label class="form-label text-dark small fw-bold">User Name</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input asp-for="UserName" class="form-control" placeholder="Username or Email" />
                 </div>
-                <span asp-validation-for="UserName" class="text-danger small"></span>
+                <span asp-validation-for="UserName" class="text-danger small ms-1"></span>
             </div>
 
             <div class="mb-3">
-                <label class="form-label text-muted small fw-bold">Password</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
-                    <input asp-for="Password" id="passwordInput" type="password" class="form-control border-start-0 border-end-0 ps-0" placeholder="Enter password" />
-                    <span class="input-group-text bg-light border-start-0" onclick="togglePassword()" style="cursor: pointer;">
-                        <i id="eyeIcon" class="bi bi-eye text-muted"></i>
+                <label class="form-label text-dark small fw-bold">Password</label>
+                <div class="input-group input-group-custom">
+                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                    <input asp-for="Password" id="passwordInput" type="password" class="form-control" placeholder="••••••••" />
+                    <span class="input-group-text" onclick="togglePassword()" style="cursor: pointer;">
+                        <i id="eyeIcon" class="bi bi-eye"></i>
                     </span>
                 </div>
-                <span asp-validation-for="Password" class="text-danger small"></span>
+                <span asp-validation-for="Password" class="text-danger small ms-1"></span>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-4 small">
+            <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="RememberMe">
-                    <label class="form-check-label text-muted" for="RememberMe">Remember me</label>
+                    <input class="form-check-input shadow-none" type="checkbox" asp-for="RememberMe" id="RememberMe">
+                    <label class="form-check-label text-muted small" for="RememberMe">Stay signed in</label>
                 </div>
-                <a href="#" class="text-primary text-decoration-none">Forgot password?</a>
+                <a href="#" class="text-primary small text-decoration-none fw-semibold">Forgot Password?</a>
             </div>
 
-            <button type="submit" class="btn btn-primary-custom w-100 text-white mb-3">
-                Sign In
+            <button type="submit" class="btn btn-login w-100 mb-4 shadow-sm">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
             </button>
 
-            <div class="text-center text-muted small">
-                Don't have an account? <a asp-action="Register" class="text-primary fw-bold text-decoration-none">Create one</a>
+            <div class="text-center">
+                <p class="text-muted small mb-0">
+                    New traveler? <a asp-action="Register" class="text-primary fw-bold text-decoration-none">Create an account</a>
+                </p>
             </div>
         </form>
     </div>
@@ -58,16 +146,14 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         function togglePassword() {
-            var input = document.getElementById("passwordInput");
-            var icon = document.getElementById("eyeIcon");
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("eyeIcon");
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove("bi-eye");
-                icon.classList.add("bi-eye-slash");
+                icon.classList.replace("bi-eye", "bi-eye-slash");
             } else {
                 input.type = "password";
-                icon.classList.remove("bi-eye-slash");
-                icon.classList.add("bi-eye");
+                icon.classList.replace("bi-eye-slash", "bi-eye");
             }
         }
     </script>
