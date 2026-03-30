@@ -1,4 +1,4 @@
-﻿using Bus_Booking_System.Hubs;
+using Bus_Booking_System.Hubs;
 using Bus_Booking_System.Models;
 using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
@@ -15,20 +15,20 @@ namespace Bus_Booking_System.Controllers
         private readonly ITripRepository _tripRepo;
         private readonly IRouteRepository _routeRepo;
         private readonly IBusRepository _busRepo;
-
         private readonly IHubContext<DashboardHub> _hubContext;
+        private readonly IHubContext<BookingHub> _bookingHubContext;
 
-        public AdminTripsController(ITripRepository tripRepo, IRouteRepository routeRepo, IBusRepository busRepo, IHubContext<DashboardHub> hubContext)
+        public AdminTripsController(ITripRepository tripRepo, IRouteRepository routeRepo, IBusRepository busRepo, IHubContext<DashboardHub> hubContext, IHubContext<BookingHub> bookingHubContext)
         {
             _tripRepo = tripRepo;
             _routeRepo = routeRepo;
             _busRepo = busRepo;
-            _hubContext = hubContext; 
+            _hubContext = hubContext;
+            _bookingHubContext = bookingHubContext;
         }
 
         public IActionResult Index()
         {
-            
             var trips = _tripRepo.GetTripsWithDetails().Where(t => !t.IsDeleted).ToList();
             return View(trips);
         }
@@ -37,15 +37,13 @@ namespace Bus_Booking_System.Controllers
         {
             var viewModel = new TripVM
             {
-                
                 TravelDate = DateTime.Today,
                 DepartureTime = DateTime.Now,
-                ArrivalTime = DateTime.Now.AddHours(2), 
-
+                ArrivalTime = DateTime.Now.AddHours(2),
                 RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem
                 {
                     Value = r.Id.ToString(),
-                    Text = $"{r.OriginCity.Name} ➔ {r.DestinationCity.Name} (${r.Price})"
+                    Text = $"{r.OriginCity.Name} -> {r.DestinationCity.Name} (${r.Price})"
                 }),
                 BusesList = new SelectList(_busRepo.GetAll(), "Id", "BusNum")
             };
@@ -58,7 +56,6 @@ namespace Bus_Booking_System.Controllers
         {
             if (ModelState.IsValid)
             {
-               
                 var selectedBus = _busRepo.GetById(model.BusId);
 
                 var newTrip = new Trip
@@ -69,29 +66,34 @@ namespace Bus_Booking_System.Controllers
                     DepartureTime = model.DepartureTime,
                     ArrivalTime = model.ArrivalTime,
                     Status = model.Status,
-                    
                     AvailableSeats = selectedBus?.TotalSeats ?? 0
                 };
 
                 _tripRepo.Add(newTrip);
                 _tripRepo.Save();
                 await _hubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+                await _bookingHubContext.Clients.All.SendAsync("ReceiveTripsUpdate");
                 TempData["SuccessMsg"] = "Trip scheduled successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
-           
-            model.RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem { Value = r.Id.ToString(), Text = $"{r.OriginCity.Name} ➔ {r.DestinationCity.Name}" });
+            model.RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem
+            {
+                Value = r.Id.ToString(),
+                Text = $"{r.OriginCity.Name} -> {r.DestinationCity.Name}"
+            });
             model.BusesList = new SelectList(_busRepo.GetAll(), "Id", "BusNum");
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             _tripRepo.Delete(id);
             _tripRepo.Save();
+            await _hubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+            await _bookingHubContext.Clients.All.SendAsync("ReceiveTripsUpdate");
             TempData["SuccessMsg"] = "Trip deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
@@ -110,19 +112,20 @@ namespace Bus_Booking_System.Controllers
                 DepartureTime = trip.DepartureTime,
                 ArrivalTime = trip.ArrivalTime,
                 Status = trip.Status,
-
-                
-                RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem { Value = r.Id.ToString(), Text = $"{r.OriginCity.Name} ➔ {r.DestinationCity.Name}" }),
+                RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem
+                {
+                    Value = r.Id.ToString(),
+                    Text = $"{r.OriginCity.Name} -> {r.DestinationCity.Name}"
+                }),
                 BusesList = new SelectList(_busRepo.GetAll(), "Id", "BusNum")
             };
 
             return View(viewModel);
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, TripVM model)
+        public async Task<IActionResult> Edit(int id, TripVM model)
         {
             if (id != model.Id) return NotFound();
 
@@ -131,7 +134,6 @@ namespace Bus_Booking_System.Controllers
                 var existingTrip = _tripRepo.GetById(id);
                 if (existingTrip == null) return NotFound();
 
-                
                 existingTrip.BusRouteId = model.BusRouteId;
                 existingTrip.BusId = model.BusId;
                 existingTrip.TravelDate = model.TravelDate;
@@ -141,12 +143,17 @@ namespace Bus_Booking_System.Controllers
 
                 _tripRepo.Update(existingTrip);
                 _tripRepo.Save();
+                await _hubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+                await _bookingHubContext.Clients.All.SendAsync("ReceiveTripsUpdate");
                 TempData["SuccessMsg"] = "Trip updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
-            
-            model.RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem { Value = r.Id.ToString(), Text = $"{r.OriginCity.Name} ➔ {r.DestinationCity.Name}" });
+            model.RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem
+            {
+                Value = r.Id.ToString(),
+                Text = $"{r.OriginCity.Name} -> {r.DestinationCity.Name}"
+            });
             model.BusesList = new SelectList(_busRepo.GetAll(), "Id", "BusNum");
             return View(model);
         }

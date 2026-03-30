@@ -1,5 +1,4 @@
 ﻿
-
 namespace Bus_Booking_System.Repository
 {
     public class TripRepository : ITripRepository
@@ -12,24 +11,31 @@ namespace Bus_Booking_System.Repository
 
         public List<Trip> GetAll()
         {
-            return appContext.Trips.ToList();
+            return appContext.Trips
+                .Where(t => !t.IsDeleted)
+                .ToList();
         }
 
         public Trip? GetById(int id)
         {
             return appContext.Trips
-                   .Where(t => t.Id == id)
+                   .Where(t => t.Id == id && !t.IsDeleted)
                    .FirstOrDefault();
         }
         public void Add(Trip entity)
         {
+            entity.IsDeleted = false;
             appContext.Trips.Add(entity);
         }
 
         public void Delete(int id)
         {
             var trip = GetById(id);
-            appContext.Trips.Remove(trip);
+            if (trip != null)
+            {
+                trip.IsDeleted = true;
+                appContext.Trips.Update(trip);
+            }
         }
 
         public void Update(Trip entity)
@@ -48,9 +54,10 @@ namespace Bus_Booking_System.Repository
                    .Include(t => t.Bus)
                    .Include(t => t.BusRoute)
                        .ThenInclude(r => r.OriginCity)
-                   .Include(t=>t.BusRoute)
-                       .ThenInclude(r=>r.DestinationCity)
+                   .Include(t => t.BusRoute)
+                       .ThenInclude(r => r.DestinationCity)
                     .Include(t => t.Bookings)
+                    .Where(t => !t.IsDeleted)
                     .OrderByDescending(t => t.Id)
                    .ToList();
         }
@@ -66,12 +73,12 @@ namespace Bus_Booking_System.Repository
                         .ThenInclude(r => r.DestinationCity)
                    .Include(t => t.Bookings)
                         .ThenInclude(b => b.SeatReservations)
-                   .FirstOrDefault(t => t.Id == id);
+                   .FirstOrDefault(t => t.Id == id && !t.IsDeleted);
         }
 
-		public List<Trip> SearchTrips(int departureCityId, int arrivalCityId, DateTime TravelDate)
-		{
-			var trips = appContext.Trips
+        public List<Trip> SearchTrips(int departureCityId, int arrivalCityId, DateTime TravelDate)
+        {
+            var trips = appContext.Trips
                    .Include(t => t.Bus)
                    .Include(t => t.BusRoute)
                         .ThenInclude(r => r.OriginCity)
@@ -79,20 +86,22 @@ namespace Bus_Booking_System.Repository
                         .ThenInclude(r => r.DestinationCity)
                    .Where(t => t.BusRoute.OriginCityId == departureCityId &&
                                t.BusRoute.DestinationCityId == arrivalCityId &&
-                               t.TravelDate.Date == TravelDate.Date)
+                               t.TravelDate.Date == TravelDate.Date &&
+                               !t.IsDeleted)
                    .ToList();
             return trips;
-		}
+        }
 
-		public IQueryable<Trip> GetAllQueryable()
-		{
-			return appContext.Trips
+        public IQueryable<Trip> GetAllQueryable()
+        {
+            return appContext.Trips
                    .Include(t => t.Bus)
                    .Include(t => t.BusRoute)
                         .ThenInclude(r => r.OriginCity)
                    .Include(t => t.BusRoute)
                         .ThenInclude(r => r.DestinationCity)
+                    .Where(t => !t.IsDeleted)
                    .AsNoTracking();
-		}
-	}
+        }
+    }
 }

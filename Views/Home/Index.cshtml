@@ -34,7 +34,9 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-bold text-muted small"><i class="bi bi-calendar-event"></i> Travel Date</label>
-                            <input asp-for="TravelDate" type="date" class="form-control" />
+                            <input asp-for="TravelDate" type="date" class="form-control"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
 
                         <button class="btn btn-primary-custom w-100 text-white shadow-sm">

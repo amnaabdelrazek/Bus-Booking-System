@@ -1,4 +1,5 @@
-﻿using Bus_Booking_System.Repository;
+using Bus_Booking_System.Models;
+using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +12,22 @@ namespace Bus_Booking_System.Controllers
         {
             tripRepository = _tripRepository;
         }
+
         [HttpGet]
         public IActionResult Index(DateTime? travelDate, decimal? maxPrice, string? status)
+        {
+            var TripsModel = GetTripsModel(travelDate, maxPrice, status);
+            return View(TripsModel);
+        }
+
+        [HttpGet]
+        public IActionResult GetTripsPartial(DateTime? travelDate, decimal? maxPrice, string? status)
+        {
+            var TripsModel = GetTripsModel(travelDate, maxPrice, status);
+            return PartialView("_TripsCardsPartial", TripsModel);
+        }
+
+        private TripIndexVM GetTripsModel(DateTime? travelDate, decimal? maxPrice, string? status)
         {
             var trips = tripRepository.GetTripsWithDetails();
 
@@ -24,22 +39,22 @@ namespace Bus_Booking_System.Controllers
                                     ? trips.Min(t => t.BusRoute?.Price ?? 0m)
                                     : 0m;
             var filteredQuery = trips.AsQueryable();
-                if (travelDate.HasValue)
-                {
-                    filteredQuery = filteredQuery.Where(t=>t.TravelDate.Date == travelDate.Value);
-                }
+            if (travelDate.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(t => t.TravelDate.Date == travelDate.Value);
+            }
 
-                if (maxPrice.HasValue)
-                {
-                    filteredQuery = filteredQuery.Where(t => t.BusRoute != null && t.BusRoute.Price <= maxPrice.Value);
-                }
+            if (maxPrice.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(t => t.BusRoute != null && t.BusRoute.Price <= maxPrice.Value);
+            }
 
-                if(!string.IsNullOrEmpty(status))
-                {
+            if (!string.IsNullOrEmpty(status))
+            {
                 filteredQuery = filteredQuery.Where(t => t.Status.ToString() == status);
-                }
+            }
             var TripsModel = new TripIndexVM
-                {
+            {
                 FilterDate = travelDate,
                 FilterMaxPrice = maxPrice ?? highestPrice,
                 MaxPrice = highestPrice,
@@ -59,15 +74,14 @@ namespace Bus_Booking_System.Controllers
                     Price = t.BusRoute.Price
                 }).ToList()
             };
-            return View(TripsModel);
-           
+            return TripsModel;
         }
 
         [HttpGet]
         public IActionResult ShowTrip(int id)
         {
             var trip = tripRepository.GetTripWithBooking(id);
-            if(trip != null)
+            if (trip != null)
             {
                 var TripVM = new TripSeatBookingVM
                 {
@@ -97,7 +111,7 @@ namespace Bus_Booking_System.Controllers
         [HttpPost]
         public IActionResult AddTrip(Trip trip)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 tripRepository.Add(trip);
                 tripRepository.Save();
@@ -110,7 +124,7 @@ namespace Bus_Booking_System.Controllers
         public IActionResult UpdateTrip(int id)
         {
             var trip = tripRepository.GetById(id);
-            if(trip == null)
+            if (trip == null)
                 return NotFound();
             return View(trip);
         }
@@ -118,7 +132,7 @@ namespace Bus_Booking_System.Controllers
         [HttpPost]
         public IActionResult UpdateTrip(Trip trip)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 tripRepository.Update(trip);
                 tripRepository.Save();
@@ -131,7 +145,7 @@ namespace Bus_Booking_System.Controllers
         public IActionResult DeleteTrip(int id)
         {
             var trip = tripRepository.GetById(id);
-            if (trip == null) 
+            if (trip == null)
                 return NotFound();
             tripRepository.Delete(id);
             tripRepository.Save();

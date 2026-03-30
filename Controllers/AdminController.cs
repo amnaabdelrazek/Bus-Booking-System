@@ -11,38 +11,29 @@ namespace Bus_Booking_System.Controllers
     {
         private readonly IBusRepository _busRepo;
         private readonly ITripRepository _tripRepo;
+        private readonly IBookingRepository _bookingRepo;
         private readonly UserManager<ApplicationUser> _userManager;
-       
+        
         public AdminController(
             IBusRepository busRepo,
             ITripRepository tripRepo,
+            IBookingRepository bookingRepo,
             UserManager<ApplicationUser> userManager)
         {
             _busRepo = busRepo;
             _tripRepo = tripRepo;
+            _bookingRepo = bookingRepo;
             _userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            
-            var totalBuses = _busRepo.GetAll().Count();
-
-           
-            var activeTrips = _tripRepo.GetAll()
-                                       .Count(t => t.Status == TripStatus.OpenForBooking);
-
-           
-            var totalUsers = _userManager.Users.Count();
-
-          
-            var totalBookings = 0;
-
-           
-            ViewBag.TotalBuses = totalBuses;
-            ViewBag.ActiveTrips = activeTrips;
-            ViewBag.TotalUsers = totalUsers;
-            ViewBag.TotalBookings = totalBookings;
+            ViewBag.TotalBuses = _busRepo.GetAll().Count();
+            ViewBag.ActiveTrips = _tripRepo.GetAll()
+                                           .Count(t => t.Status == TripStatus.OpenForBooking);
+            ViewBag.TotalUsers = _userManager.Users.Count(u => !u.IsDeleted);
+            ViewBag.TotalBookings = _bookingRepo.GetAll()
+                                                .Count(b => b.Status != BookingStatus.Cancelled);
 
             return View();
         }
@@ -53,8 +44,9 @@ namespace Bus_Booking_System.Controllers
         {
             var totalBuses = _busRepo.GetAll().Count();
             var activeTrips = _tripRepo.GetAll().Count(t => t.Status == TripStatus.OpenForBooking);
-            var totalUsers = _userManager.Users.Count();
-            var totalBookings = 0; 
+            var totalUsers = _userManager.Users.Count(u => !u.IsDeleted);
+            var totalBookings = _bookingRepo.GetAll()
+                                            .Count(b => b.Status != BookingStatus.Cancelled);
 
             return Json(new
             {
