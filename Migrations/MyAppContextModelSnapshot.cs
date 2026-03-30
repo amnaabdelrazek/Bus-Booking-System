@@ -680,7 +680,7 @@ namespace Bus_Booking_System.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExpireAt")
+                    b.Property<DateTime?>("ExpireAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")

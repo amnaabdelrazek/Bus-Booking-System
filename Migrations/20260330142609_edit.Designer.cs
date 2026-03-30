@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bus_Booking_System.Migrations
 {
     [DbContext(typeof(MyAppContext))]
-    [Migration("20260326102218_AddTravelDateToTrips")]
-    partial class AddTravelDateToTrips
+    [Migration("20260330142609_edit")]
+    partial class edit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,46 @@ namespace Bus_Booking_System.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@test.com",
+                            EmailConfirmed = true,
+                            FullName = "Admin",
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@TEST.COM",
+                            NormalizedUserName = "ADMIN@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOgFakeHashExample123456789==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@test.com"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "user@test.com",
+                            EmailConfirmed = true,
+                            FullName = "User",
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER@TEST.COM",
+                            NormalizedUserName = "USER@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOgFakeHashExample123456789==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2",
+                            TwoFactorEnabled = false,
+                            UserName = "user@test.com"
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Booking", b =>
@@ -136,6 +176,18 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Status = 2,
+                            TotalPrice = 300m,
+                            TripId = 1,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Bus", b =>
@@ -164,6 +216,17 @@ namespace Bus_Booking_System.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Buses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BusNum = "BUS001",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            TotalSeats = 40,
+                            Type = "Luxury"
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.BusRoute", b =>
@@ -204,6 +267,19 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("OriginCityId");
 
                     b.ToTable("BusRoutes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DestinationCityId = 2,
+                            Distance = 200m,
+                            IsDeleted = false,
+                            OriginCityId = 1,
+                            Price = 300m,
+                            TimeNeeded = new TimeSpan(0, 3, 0, 0, 0)
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.City", b =>
@@ -226,6 +302,22 @@ namespace Bus_Booking_System.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Name = "City A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Name = "City B"
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Seat", b =>
@@ -253,6 +345,328 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("BusId");
 
                     b.ToTable("Seats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "1A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "1B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "1C"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "1D"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "2A"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "2B"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "2C"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "2D"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "3A"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "3B"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "3C"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "3D"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "4A"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "4B"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "4C"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "4D"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "5A"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "5B"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "5C"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "5D"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "6A"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "6B"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "6C"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "6D"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "7A"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "7B"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "7C"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "7D"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "8A"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "8B"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "8C"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "8D"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "9A"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "9B"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "9C"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "9D"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "10A"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "10B"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "10C"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            BusId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatNum = "10D"
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.SeatReservation", b =>
@@ -269,7 +683,7 @@ namespace Bus_Booking_System.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExpireAt")
+                    b.Property<DateTime?>("ExpireAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -293,6 +707,30 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("TripId");
 
                     b.ToTable("SeatReservations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BookingId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ExpireAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatId = 1,
+                            Status = 1,
+                            TripId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BookingId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ExpireAt = new DateTime(2024, 1, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            SeatId = 2,
+                            Status = 2,
+                            TripId = 1
+                        });
                 });
 
             modelBuilder.Entity("Bus_Booking_System.Models.Trip", b =>
@@ -337,6 +775,21 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("BusRouteId");
 
                     b.ToTable("Trips");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArrivalTime = new DateTime(2024, 1, 1, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            AvailableSeats = 38,
+                            BusId = 1,
+                            BusRouteId = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartureTime = new DateTime(2024, 1, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Status = 0,
+                            TravelDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -367,6 +820,20 @@ namespace Bus_Booking_System.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -451,6 +918,18 @@ namespace Bus_Booking_System.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -496,13 +975,13 @@ namespace Bus_Booking_System.Migrations
                     b.HasOne("Bus_Booking_System.Models.City", "DestinationCity")
                         .WithMany("RoutesAsDestination")
                         .HasForeignKey("DestinationCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Bus_Booking_System.Models.City", "OriginCity")
                         .WithMany("RoutesAsOrigin")
                         .HasForeignKey("OriginCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("DestinationCity");
