@@ -8,7 +8,7 @@
         <div class="card border-0 shadow-sm rounded-3">
             <div class="card-body text-center py-4">
                 <i class="bi bi-ticket-detailed display-4 text-primary mb-2"></i>
-                <h5 class="text-muted">Total Bookings</h5>
+                <h5 class="text-muted">Active Bookings</h5>
                 <h2 class="fw-bold" id="totalBookings">@ViewBag.TotalBookings</h2>
             </div>
         </div>
@@ -45,19 +45,6 @@
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                <h5 class="fw-bold text-muted">Recent System Activity</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Live updates will appear here...</p>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
 
@@ -65,25 +52,30 @@
         var connection = new signalR.HubConnectionBuilder().withUrl("/dashboardHub").build();
 
         connection.on("ReceiveStatsUpdate", function () {
-           
+            loadDashboardStats();
+        });
+
+        function loadDashboardStats() {
             fetch('/Admin/GetDashboardStats')
                 .then(response => response.json())
                 .then(data => {
-                    
                     document.getElementById("totalBuses").innerText = data.buses;
                     document.getElementById("activeTrips").innerText = data.trips;
                     document.getElementById("totalUsers").innerText = data.users;
                     document.getElementById("totalBookings").innerText = data.bookings;
 
-                    
+                    highlightChange("totalBookings");
                     highlightChange("activeTrips");
                     highlightChange("totalBuses");
+                    highlightChange("totalUsers");
                 })
                 .catch(error => console.error('Error fetching new stats:', error));
-        });
+        }
 
         connection.start().then(function () {
             console.log("🟢 SignalR Ready! Waiting for updates from other browsers...");
+        }).catch(function (error) {
+            console.error("SignalR connection error:", error);
         });
 
         function highlightChange(elementId) {
@@ -91,7 +83,9 @@
             if(el) {
                 el.style.transition = "color 0.4s ease-in-out";
                 el.style.color = "#198754";
-                setTimeout(() => { el.style.color = ""; }, 800);
+                setTimeout(function () {
+                    el.style.color = "";
+                }, 800);
             }
         }
     </script>

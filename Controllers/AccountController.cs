@@ -1,16 +1,20 @@
-﻿using Bus_Booking_System.Repository;
+using Bus_Booking_System.Hubs;
+using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Bus_Booking_System.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IHubContext<DashboardHub> _dashboardHubContext;
 
-        public AccountController(IAccountRepository accountRepository)
+        public AccountController(IAccountRepository accountRepository, IHubContext<DashboardHub> dashboardHubContext)
         {
             _accountRepository = accountRepository;
+            _dashboardHubContext = dashboardHubContext;
         }
 
         // ================= Register =================
@@ -27,7 +31,10 @@ namespace Bus_Booking_System.Controllers
             var result = await _accountRepository.Register(model);
 
             if (result.Succeeded)
+            {
+                await _dashboardHubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
                 return RedirectToAction("Index", "Trip");
+            }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
