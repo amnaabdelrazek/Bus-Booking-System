@@ -163,11 +163,9 @@
                                 <span class="small fw-bold text-muted">Available: <span class="text-dark">@trip.AvailableSeats Seats</span></span>
                             </div>
 
-                            <a asp-controller="Booking"
-                               asp-action="SelectSeats"
-                               asp-route-tripId="@trip.TripId"
-                               class="btn btn-select-seats w-100 shadow-sm">
-                                Book Now <i class="bi bi-chevron-right ms-1"></i>
+                            <a asp-controller="Trip" asp-action="ShowTrip" asp-route-id="@trip.TripId"
+                               class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
+                                Book <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>
                     </div>
