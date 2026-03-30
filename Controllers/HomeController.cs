@@ -9,20 +9,22 @@ namespace Bus_Booking_System.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ITripRepository tripRepository;
-		private readonly MyAppContext context;
+        private readonly ICityRepository cityRepository;
+        //private readonly MyAppContext context;
 
-		public HomeController(ITripRepository _tripRepository, MyAppContext _context)
+		public HomeController(ITripRepository _tripRepository, MyAppContext _context, ICityRepository _cityRepository)
 		{
 			tripRepository = _tripRepository;
-			context = _context;
+			//context = _context;
+			cityRepository = _cityRepository;
 		}
 
 		public IActionResult Index()
 		{
 			var vm = new SearchViewModel
 			{
-				Cities = context.Cities.ToList()
-			};
+                Cities = cityRepository.GetAll()
+            };
 
 			return View("Index",vm);
 		}
@@ -32,8 +34,8 @@ namespace Bus_Booking_System.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				model.Cities = context.Cities.ToList();
-				return View("Index", model);
+                model.Cities = cityRepository.GetAll();
+                return View("Index", model);
 			}
 
 			var trips = tripRepository.SearchTrips(
@@ -55,7 +57,13 @@ namespace Bus_Booking_System.Controllers
 				BusNumber = t.Bus.BusNum
 			}).ToList();
 
-			return View("Search", result);
+            return RedirectToAction("Index", "Trip", new
+            {
+                travelDate = model.TravelDate,
+                departureCityId = model.DepartureCityId,
+                arrivalCityId = model.ArrivalCityId
+            });
+            //return View("Search", result);
 		}
 	}
 }

@@ -14,20 +14,20 @@ namespace Bus_Booking_System.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(DateTime? travelDate, decimal? maxPrice, string? status)
+        public IActionResult Index(DateTime? travelDate, decimal? maxPrice, string? status, int? departureCityId, int? arrivalCityId)
         {
-            var TripsModel = GetTripsModel(travelDate, maxPrice, status);
+            var TripsModel = GetTripsModel(travelDate, maxPrice, status, departureCityId, arrivalCityId);
             return View(TripsModel);
         }
 
         [HttpGet]
-        public IActionResult GetTripsPartial(DateTime? travelDate, decimal? maxPrice, string? status)
+        public IActionResult GetTripsPartial(DateTime? travelDate, decimal? maxPrice, string? status, int? departureCityId, int? arrivalCityId)
         {
-            var TripsModel = GetTripsModel(travelDate, maxPrice, status);
+            var TripsModel = GetTripsModel(travelDate, maxPrice, status, departureCityId, arrivalCityId);
             return PartialView("_TripsCardsPartial", TripsModel);
         }
 
-        private TripIndexVM GetTripsModel(DateTime? travelDate, decimal? maxPrice, string? status)
+        private TripIndexVM GetTripsModel(DateTime? travelDate, decimal? maxPrice, string? status, int? departureCityId, int? arrivalCityId)
         {
             var trips = tripRepository.GetTripsWithDetails();
 
@@ -39,6 +39,17 @@ namespace Bus_Booking_System.Controllers
                                     ? trips.Min(t => t.BusRoute?.Price ?? 0m)
                                     : 0m;
             var filteredQuery = trips.AsQueryable();
+
+            if (departureCityId.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(t => t.BusRoute.OriginCityId == departureCityId.Value);
+            }
+
+
+            if (arrivalCityId.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(t => t.BusRoute.DestinationCityId == arrivalCityId.Value);
+            }
             if (travelDate.HasValue)
             {
                 filteredQuery = filteredQuery.Where(t => t.TravelDate.Date == travelDate.Value);

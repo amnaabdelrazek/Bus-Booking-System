@@ -15,7 +15,7 @@ namespace Bus_Booking_System.ViewModel
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("NewPassword")]
+        [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
         [Display(Name = "Confirm New Password")]
         public string ConfirmNewPassword { get; set; } = "";
     }
