@@ -96,6 +96,23 @@ namespace Bus_Booking_System.Repository
         }
         public void Save() => appContext.SaveChanges();
 
+        // أضيفي هذه الدالة داخل كلاس BookingRepository
+        public async Task<List<SeatReservation>> GetPendingReservationsAsync(int tripId, List<int> seatIds)
+        {
+            return await appContext.SeatReservations
+                .Where(sr => sr.TripId == tripId &&
+                             seatIds.Contains(sr.SeatId) &&
+                             sr.Status == SeatReservationStatus.Pending)
+                .ToListAsync();
+        }
+
+        public async Task<bool> CheckIfSeatsAlreadyBookedAsync(int tripId, List<int> seatIds)
+        {
+            return await appContext.SeatReservations
+                .AnyAsync(sr => sr.TripId == tripId &&
+                                seatIds.Contains(sr.SeatId) &&
+                                sr.Status == SeatReservationStatus.Confirmed);
+        }
         public IQueryable<Booking> GetAllQueryable()
         {
             return appContext.Bookings

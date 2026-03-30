@@ -15,7 +15,8 @@ namespace Bus_Booking_System.Repository
         Task<Booking> GetByIdAsync(int id);
         Task<Booking> GetBookingWithDetailsAsync (int id);
         Task<IEnumerable<Booking>> GetUserBookingsAsync(int userId);
-
+        Task<List<SeatReservation>> GetPendingReservationsAsync(int tripId, List<int> seatIds);
         Task<bool> SaveChangesAsync();
+        Task<bool> CheckIfSeatsAlreadyBookedAsync(int tripId, List<int> seatIds);
     }
 }

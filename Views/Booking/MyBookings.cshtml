@@ -110,8 +110,9 @@
                                 <div class="info-label">Route</div>
                                 <div class="route-text fw-bold">@item.Route</div>
                                 <div class="mt-2">
-                                    <span class="badge @(isCancelled ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success") rounded-pill px-3">
-                                        <i class="bi @(isCancelled ? "bi-x-circle" : "bi-check-circle") me-1"></i> @item.Status
+                                    <span class="status-badge badge @(isCancelled ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success") rounded-pill px-3">
+                                        <i class="status-icon bi @(isCancelled ? "bi-x-circle" : "bi-check-circle") me-1"></i>
+                                        <span class="status-text">@item.Status</span>
                                     </span>
                                 </div>
                             </div>
@@ -128,7 +129,7 @@
                                 <div class="col-12">
                                     <div class="info-label">Seats Assigned</div>
                                     <div class="info-value text-primary">
-                                        <i class="bi bi-Layers me-1"></i> @string.Join(", ", item.SeatNumbers)
+                                        <i class="bi bi-layers me-1"></i> @string.Join(", ", item.SeatNumbers)
                                     </div>
                                 </div>
                             </div>
@@ -165,22 +166,40 @@
             .withAutomaticReconnect()
             .build();
 
-        // تحديث الواجهة عند استلام إشعار إلغاء
-        connection.on("ReceiveCancellation", function (bookingId) {
+        // وظيفة موحدة لتحديث واجهة الكارت (Card UI)
+        function updateBookingCardToCancelled(bookingId) {
             const card = document.getElementById(`booking-card-${bookingId}`);
             if (card) {
-                card.classList.add('cancelled');
-                const actionContainer = card.querySelector('.action-btn-container');
-                const statusBadge = card.querySelector('.badge');
+                // 1. إضافة كلاس الإلغاء للكارت (لتغيير لون الحافة والشفافية)
+                const cardInner = card.querySelector('.booking-card');
+                if (cardInner) cardInner.classList.add('cancelled');
 
+                // 2. تحديث نص وألوان الـ Badge
+                const statusBadge = card.querySelector('.status-badge');
+                const statusText = card.querySelector('.status-text');
+                const statusIcon = card.querySelector('.status-icon');
+
+                if (statusBadge) {
+                    statusBadge.classList.remove('bg-success-subtle', 'text-success');
+                    statusBadge.classList.add('bg-danger-subtle', 'text-danger');
+                }
+                if (statusText) statusText.innerText = "Cancelled";
+                if (statusIcon) {
+                    statusIcon.classList.remove('bi-check-circle');
+                    statusIcon.classList.add('bi-x-circle');
+                }
+
+                // 3. تغيير الزر ليصبح "Booking Cancelled" وغير مفعل
+                const actionContainer = card.querySelector('.action-btn-container');
                 if (actionContainer) {
                     actionContainer.innerHTML = '<button class="btn btn-secondary disabled w-100 rounded-pill py-2 fw-bold opacity-50">Booking Cancelled</button>';
                 }
-                if (statusBadge) {
-                    statusBadge.className = "badge bg-danger-subtle text-danger rounded-pill px-3";
-                    statusBadge.innerHTML = '<i class="bi bi-x-circle me-1"></i> Cancelled';
-                }
             }
+        }
+
+        // تحديث الواجهة عند استلام إشعار إلغاء عبر SignalR (للمتصفحات الأخرى المفتوحة لنفس اليوزر)
+        connection.on("ReceiveCancellation", function (bookingId) {
+            updateBookingCardToCancelled(bookingId);
         });
 
         connection.start().catch(err => console.error(err.toString()));
@@ -202,20 +221,20 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // إظهار Loading بسيط
                     Swal.showLoading();
 
                     $.post('/Booking/CancelBooking', { BookingId: id })
                         .done(function () {
+                            // التعديل هنا: تحديث الواجهة فوراً عند نجاح الطلب
+                            updateBookingCardToCancelled(id);
+
                             Swal.fire({
                                 title: 'Success!',
                                 text: 'The trip has been cancelled.',
                                 icon: 'success',
                                 confirmButtonColor: '#0d6efd',
-                                timer: 2000
-                            }).then(() => {
-                                
-                                if (!connection.state === "Connected") location.reload();
+                                timer: 2000,
+                                showConfirmButton: false
                             });
                         })
                         .fail(function () {

@@ -7,7 +7,8 @@ namespace Bus_Booking_System.Models
     {
         Locked,
         Confirmed,
-        Released
+        Released,
+        Pending
     }
 
     public class SeatReservation : BaseEntity
@@ -23,7 +24,7 @@ namespace Bus_Booking_System.Models
 
 
         [Display(Name = "Expire At")]
-        public DateTime ExpireAt { get; set; }
+        public DateTime? ExpireAt { get; set; }
 
         public Trip? Trip { get; set; }
         public Booking? Booking { get; set; }

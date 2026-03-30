@@ -1,10 +1,11 @@
-using Bus_Booking_System.Hubs;
+﻿using Bus_Booking_System.Hubs;
 using Bus_Booking_System.Models;
 using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Bus_Booking_System.Controllers
@@ -16,63 +17,105 @@ namespace Bus_Booking_System.Controllers
         private readonly IHubContext<DashboardHub> dashboardHubContext;
         private readonly ITripRepository tripRepository;
 
-        public BookingController(IBookingRepository _bookingRepository, IHubContext<BookingHub> _hubContext, IHubContext<DashboardHub> _dashboardHubContext, ITripRepository _tripRepository)
+        public BookingController(IBookingRepository _bookingRepository,
+                                 IHubContext<BookingHub> _hubContext,
+                                 IHubContext<DashboardHub> _dashboardHubContext,
+                                 ITripRepository _tripRepository)
         {
             bookingRepository = _bookingRepository;
             hubContext = _hubContext;
             dashboardHubContext = _dashboardHubContext;
             tripRepository = _tripRepository;
         }
-        public IActionResult Index()
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> LockSeatsBeforeConfirm(int tripId, string seats)
         {
-            return View();
+            if (string.IsNullOrEmpty(seats)) return BadRequest();
+
+            var seatIds = seats.Split(',').Select(int.Parse).ToList();
+
+            foreach (var seatId in seatIds)
+            {
+                var reservation = new SeatReservation
+                {
+                    TripId = tripId,
+                    SeatId = seatId,
+                    Status = SeatReservationStatus.Pending,
+                    ExpireAt = DateTime.Now.AddMinutes(10)
+                };
+                await bookingRepository.AddSeatReservationAsync(reservation);
+            }
+
+            await bookingRepository.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpGet]
         public IActionResult Confirm(int tripId, string seats, decimal price)
         {
+            if (string.IsNullOrEmpty(seats)) return RedirectToAction("Index", "Trip");
+
             var seatsIds = seats.Split(',').Select(int.Parse).ToList();
             var bookingVM = new ConfirmBookingVM
             {
                 TripId = tripId,
                 SeatIds = seatsIds,
-                PricePerSeat = price
+                PricePerSeat = price,
             };
             return View(bookingVM);
         }
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Confirm(ConfirmBookingVM confirmBooking)
         {
-            var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                                 ?? User.FindFirstValue("Id");
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out int userId)) return RedirectToAction("Login", "Account");
 
-            if (string.IsNullOrEmpty(claimValue) || !int.TryParse(claimValue, out int userId) || userId == 0)
+            // --- فحص الأمان النهائي لمنع الحجز المزدوج ---
+            var alreadyBooked = await bookingRepository.CheckIfSeatsAlreadyBookedAsync(confirmBooking.TripId, confirmBooking.SeatIds);
+            if (alreadyBooked)
             {
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "عذراً، أحد المقاعد التي اخترتها تم حجزه بالفعل من قبل مستخدم آخر.";
+                return RedirectToAction("ShowTrip", "Trip", new { id = confirmBooking.TripId });
             }
+
             var booking = new Booking
             {
                 TripId = confirmBooking.TripId,
+                UserId = userId,
                 TotalPrice = confirmBooking.TotalPrice,
                 Status = BookingStatus.Confirmed,
-                UserId = userId
+                CreatedAt = DateTime.Now,
+                IsDeleted = false
             };
 
             await bookingRepository.addAsync(booking);
 
+            var pendingReservations = await bookingRepository.GetPendingReservationsAsync(confirmBooking.TripId, confirmBooking.SeatIds);
+
             foreach (var seatId in confirmBooking.SeatIds)
             {
-                var reservation = new SeatReservation
+                var res = pendingReservations.FirstOrDefault(p => p.SeatId == seatId);
+                if (res != null)
                 {
-                    Booking = booking,
-                    SeatId = seatId,
-                    TripId = confirmBooking.TripId,
-                    Status = SeatReservationStatus.Confirmed,
-                    ExpireAt = DateTime.Now.AddDays(1)
-                };
-                await bookingRepository.AddSeatReservationAsync(reservation);
+                    res.Status = SeatReservationStatus.Confirmed;
+                    res.Booking = booking;
+                    res.ExpireAt = null;
+                }
+                else
+                {
+                    await bookingRepository.AddSeatReservationAsync(new SeatReservation
+                    {
+                        TripId = confirmBooking.TripId,
+                        SeatId = seatId,
+                        Status = SeatReservationStatus.Confirmed,
+                        Booking = booking
+                    });
+                }
             }
 
             if (await bookingRepository.SaveChangesAsync())
@@ -92,28 +135,28 @@ namespace Bus_Booking_System.Controllers
                     tripRepository.Save();
                 }
 
+                // مسح القفل المؤقت من الذاكرة (SignalR Hub)
+                foreach (var seatId in confirmBooking.SeatIds)
+                {
+                    BookingHub.ReleaseSeat(confirmBooking.TripId, seatId.ToString());
+                }
+
+                // تحديث الـ UI عند كل المستخدمين فوراً
                 await hubContext.Clients.All.SendAsync("UpdateSeatStatus", confirmBooking.TripId, confirmBooking.SeatIds, "Booked", isFull);
-                await hubContext.Clients.All.SendAsync("ReceiveBookingsUpdate");
                 await dashboardHubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+
                 return RedirectToAction("MyBookings");
             }
-            return BadRequest();
+
+            return View(confirmBooking);
         }
+
         [Authorize]
         public async Task<IActionResult> MyBookings()
         {
-            int userId;
-            var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out int userId)) return RedirectToAction("Login", "Account");
 
-            if (!int.TryParse(claimValue, out userId))
-            {
-                var backupClaim = User.FindFirstValue("Id");
-                int.TryParse(backupClaim, out userId);
-            }
-            if (string.IsNullOrEmpty(claimValue))
-            {
-                return RedirectToAction("Login", "Account");
-            }
             var bookings = await bookingRepository.GetUserBookingsAsync(userId);
             var BookingVM = bookings.Select(b => new BookingDeatailsVM
             {
@@ -129,21 +172,22 @@ namespace Bus_Booking_System.Controllers
             return View(BookingVM);
         }
 
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CancelBooking(int BookingId)
         {
             var booking = await bookingRepository.GetBookingWithDetailsAsync(BookingId);
-            if (booking == null)
-                return NotFound();
-            booking.Status = BookingStatus.Cancelled;
+            if (booking == null) return NotFound();
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (booking.UserId.ToString() != userId) return Forbid();
+
+            booking.Status = BookingStatus.Cancelled;
             var trip = booking.Trip;
             var seatIds = booking.SeatReservations.Select(sr => sr.SeatId).ToList();
-            trip.AvailableSeats += seatIds.Count();
 
-            if (trip.Status == TripStatus.Completed && trip.AvailableSeats > 0)
-            {
-                trip.Status = TripStatus.OpenForBooking;
-            }
+            trip.AvailableSeats += seatIds.Count;
+            if (trip.Status == TripStatus.Completed) trip.Status = TripStatus.OpenForBooking;
 
             foreach (var res in booking.SeatReservations)
             {
@@ -153,8 +197,6 @@ namespace Bus_Booking_System.Controllers
             if (await bookingRepository.SaveChangesAsync())
             {
                 await hubContext.Clients.All.SendAsync("UpdateSeatStatus", trip.Id, seatIds, "Available", false);
-                await hubContext.Clients.All.SendAsync("BookingCancelled", BookingId);
-                await hubContext.Clients.All.SendAsync("ReceiveBookingsUpdate");
                 await dashboardHubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
                 return Ok();
             }

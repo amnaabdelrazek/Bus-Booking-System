@@ -178,50 +178,21 @@
     }
 </div>
 
-<script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+@* <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
 <script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/bookingHub")
-        .withAutomaticReconnect()
-        .build();
+    // نتحقق أولاً هل الـ connection موجود؟
+    if (typeof connection !== 'undefined') {
 
-    connection.on("UpdateSeatStatus", function (tripId, seatIds, status) {
-        const seatCountSpan = document.getElementById(`seats-count-${tripId}`);
-        const actionArea = document.getElementById(`action-${tripId}`);
+        // امسحي أي سطر فيه connection.start() من هنا نهائياً
 
-        if (seatCountSpan) {
-            let currentCount = parseInt(seatCountSpan.innerText);
+        connection.on("UpdateSeatStatus", function (tripId, seatIds, status, isFull) {
+            // كود تحديث الكراسي بتاعك
+            console.log("Update received for trip: " + tripId);
+            const seatCountSpan = document.getElementById(`available-seats-${tripId}`);
+            // ... باقي الكود ...
+        });
 
-            if (status === "Booked") {
-                currentCount -= seatIds.length;
-            } else if (status === "Available") {
-                currentCount += seatIds.length;
-            }
-
-            // تحديث رقم المقاعد المتاحة
-            seatCountSpan.innerText = `${currentCount} Seats left`;
-
-            // التحكم في مظهر المنطقة (لون النص + الزر)
-            if (currentCount <= 0) {
-                seatCountSpan.innerText = "Full House";
-                seatCountSpan.parentElement.classList.add("text-danger", "fw-bold");
-
-                // تغيير الزر إلى Full تلقائياً
-                if (actionArea) {
-                    actionArea.innerHTML = `
-                            <button class="btn btn-outline-secondary disabled rounded-pill px-3 py-2 small" style="font-size: 0.8rem;">
-                                Full / Closed
-                            </button>`;
-                }
-            } else if (currentCount < 5) {
-                seatCountSpan.parentElement.classList.add("text-danger", "fw-bold");
-                seatCountSpan.parentElement.classList.remove("text-muted");
-            } else {
-                seatCountSpan.parentElement.classList.remove("text-danger", "fw-bold");
-                seatCountSpan.parentElement.classList.add("text-muted");
-            }
-        }
-    });
-
-    connection.start().catch(err => console.error(err.toString()));
-</script>
+    } else {
+        console.error("SignalR connection is not defined in the parent page.");
+    }
+</script> *@

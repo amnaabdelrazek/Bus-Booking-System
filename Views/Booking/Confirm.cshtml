@@ -121,6 +121,9 @@
             <form asp-action="Confirm" method="post" class="mt-4">
                 <input type="hidden" asp-for="TripId" />
                 <input type="hidden" asp-for="PricePerSeat" />
+
+                <input type="hidden" asp-for="TotalPrice" value="@(Model.SeatIds.Count * Model.PricePerSeat)" />
+
                 @for (int i = 0; i < Model.SeatIds.Count; i++)
                 {
                     <input type="hidden" name="SeatIds[@i]" value="@Model.SeatIds[i]" />
@@ -129,12 +132,6 @@
                 <button type="submit" class="btn btn-confirm w-100 py-3 fs-5 mb-3">
                     Confirm & Pay <i class="bi bi-credit-card-2-front ms-2"></i>
                 </button>
-
-                <div class="text-center">
-                    <a href="javascript:history.back()" class="text-decoration-none text-muted small hover-danger">
-                        <i class="bi bi-arrow-left me-1"></i> Go back and change seats
-                    </a>
-                </div>
             </form>
         </div>
 

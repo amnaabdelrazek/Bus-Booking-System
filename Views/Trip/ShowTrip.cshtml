@@ -119,6 +119,21 @@
         border-radius: 12px;
         font-weight: 600;
     }
+
+    .seat-locked {
+        background-color: #ffc107 !important;
+    }
+    /* أصفر للانتظار */
+    .seat-booked {
+        background-color: #dc3545 !important;
+        color: white;
+    }
+    /* أحمر للحجز المؤكد */
+    .seat-selected {
+        background-color: #0d6efd !important;
+        color: white;
+    }
+    /* أزرق لما أنا أختار */
 </style>
 
 <div class="container my-5">
@@ -256,6 +271,30 @@
                 }
             });
             updateUI(@Model.Price);
+        }
+    });
+    connection.on("SeatLocked", function (tripId, seatId) {
+        if (tripId == "@Model.TripId") {
+            $(`.seat-btn[data-seat-id='${seatId}']`).addClass("seat-locked").prop("disabled", true);
+        }
+    });
+
+    connection.on("SeatUnlocked", function (tripId, seatId) {
+        if (tripId == "@Model.TripId") {
+            $(`.seat-btn[data-seat-id='${seatId}']`).removeClass("seat-locked").prop("disabled", false);
+        }
+    });
+
+    connection.on("UpdateSeatStatus", function (tripId, seatIds, status, isFull) {
+        if (tripId == "@Model.TripId") {
+            seatIds.forEach(id => {
+                const $btn = $(`.seat-btn[data-seat-id='${id}']`);
+                if (status === "Booked") {
+                    $btn.removeClass("seat-locked seat-selected").addClass("seat-booked").prop("disabled", true);
+                } else {
+                    $btn.removeClass("seat-booked seat-locked").prop("disabled", false);
+                }
+            });
         }
     });
 

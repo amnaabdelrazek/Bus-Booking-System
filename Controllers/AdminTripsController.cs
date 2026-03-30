@@ -1,4 +1,4 @@
-using Bus_Booking_System.Hubs;
+﻿using Bus_Booking_System.Hubs;
 using Bus_Booking_System.Models;
 using Bus_Booking_System.Repository;
 using Bus_Booking_System.ViewModel;
@@ -56,9 +56,7 @@ namespace Bus_Booking_System.Controllers
         {
             if (ModelState.IsValid)
             {
-                var selectedBus = _busRepo.GetById(model.BusId);
-
-                var newTrip = new Trip
+                var trip = new Trip
                 {
                     BusRouteId = model.BusRouteId,
                     BusId = model.BusId,
@@ -66,17 +64,24 @@ namespace Bus_Booking_System.Controllers
                     DepartureTime = model.DepartureTime,
                     ArrivalTime = model.ArrivalTime,
                     Status = model.Status,
-                    AvailableSeats = selectedBus?.TotalSeats ?? 0
+                    AvailableSeats = _busRepo.GetById(model.BusId).TotalSeats // تأكدي من تعيين السعة
                 };
 
-                _tripRepo.Add(newTrip);
+                _tripRepo.Add(trip);
                 _tripRepo.Save();
-                await _hubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+
+                // --- السطر السحري هنا ---
+                // إرسال إشارة لجميع المستخدمين لتحديث قائمة الرحلات
                 await _bookingHubContext.Clients.All.SendAsync("ReceiveTripsUpdate");
+
+                // وأيضاً تحديث الإحصائيات في الداشبورد لو حابة
+                await _hubContext.Clients.All.SendAsync("ReceiveStatsUpdate");
+
                 TempData["SuccessMsg"] = "Trip scheduled successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            // إعادة ملء القوائم في حالة فشل الـ Validation
             model.RoutesList = _routeRepo.GetAllWithCities().Select(r => new SelectListItem
             {
                 Value = r.Id.ToString(),
@@ -85,7 +90,6 @@ namespace Bus_Booking_System.Controllers
             model.BusesList = new SelectList(_busRepo.GetAll(), "Id", "BusNum");
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

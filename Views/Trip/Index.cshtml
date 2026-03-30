@@ -128,7 +128,80 @@
                 </form>
             </div>
         </div>
+        @section Scripts {
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+            <script>
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/bookingHub")
+                    .build();
 
+                connection.on("UpdateSeatStatus", function (tripId, seatIds, status, isFull) {
+                    const seatsElement = document.getElementById("seats-count-" + tripId);
+                    const actionArea = document.getElementById("action-" + tripId);
+
+                    if (seatsElement) {
+                        let currentCount = parseInt(seatsElement.innerText);
+                        const numberOfSeats = Array.isArray(seatIds) ? seatIds.length : 1;
+
+                        // Calculate new count
+                        let newCount = (status === "Booked")
+                            ? Math.max(0, currentCount - numberOfSeats)
+                            : currentCount + numberOfSeats;
+
+                        seatsElement.innerText = newCount;
+
+                        // Visual Feedback (Colors)
+                        const parentWrapper = seatsElement.closest('.seats-badge-wrapper');
+                        if (newCount < 5) {
+                            parentWrapper.classList.add("text-danger", "fw-bold", "animate__animated", "animate__shakeX");
+                        } else {
+                            parentWrapper.classList.remove("text-danger", "fw-bold");
+                        }
+
+                        // Handle Dynamic Button Switch (Open -> Full)
+                        if (newCount <= 0 || isFull) {
+                            if (actionArea) {
+                                actionArea.innerHTML = `
+                                    <button class="btn btn-outline-secondary disabled rounded-pill px-3 py-2 small">
+                                        Full / Closed
+                                    </button>`;
+                            }
+                            // If the trip just became full, refresh the list in the background to ensure consistency
+                            setTimeout(() => { loadTripsPartial(); }, 2000);
+                        }
+                    }
+                });
+
+                connection.on("ReceiveTripsUpdate", function () {
+                    loadTripsPartial(); // دي بتمسح القائمة القديمة وتجيب الجديدة بـ AJAX
+                });
+
+
+                function loadTripsPartial() {
+                    var partialUrl = '@Url.Action("GetTripsPartial", "Trip")' + window.location.search;
+                    $("#TripsCardsContainer").fadeOut(200, function () {
+                        $(this).load(partialUrl, function () {
+                            $(this).fadeIn(200);
+                            updateTripsCount();
+                        });
+                    });
+                }
+
+                function updateTripsCount() {
+                    var tripsCount = $("#TripsCountValue").val();
+                    if (tripsCount != undefined) {
+                        $("#TripsCountText").html('<i class="bi bi-bus-front me-2"></i>' + tripsCount + ' journeys available for you');
+                    }
+                }
+
+                connection.start().then(function () {
+                    console.log("Connected to Booking Hub!");
+                }).catch(function (err) {
+                    console.error("SignalR Connection Error: ", err.toString());
+                });
+            </script>
+        }
         <div class="col-lg-9">
             <div class="trips-container" id="TripsCardsContainer">
                 <partial name="_TripsCardsPartial" model="Model" />
@@ -137,64 +210,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
-    <script>
-        // إعداد اتصال SignalR
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/bookingHub")
-            .withAutomaticReconnect() // إضافة ميزة إعادة الاتصال التلقائي
-            .build();
-
-        connection.on("UpdateSeatStatus", function (tripId, seatIds, status, isFull) {
-            var seatsElement = document.getElementById("seats-count-" + tripId);
-            if (seatsElement) {
-                var currentCount = parseInt(seatsElement.innerText);
-                var numberOfSeats = Array.isArray(seatIds) ? seatIds.length : 1;
-                var newCount = (status === "Booked") ? Math.max(0, currentCount - numberOfSeats) : currentCount + numberOfSeats;
-
-                // تحديث النص مع إضافة أنيميشن بسيط للتنبيه
-                seatsElement.innerText = newCount;
-
-                var parentWrapper = seatsElement.closest('.seats-badge-wrapper');
-                if (newCount < 5) {
-                    parentWrapper.classList.add("text-danger", "animate__animated", "animate__shakeX");
-                } else {
-                    parentWrapper.classList.remove("text-danger");
-                }
-
-                if (isFull || newCount <= 0) {
-                    setTimeout(() => { loadTripsPartial(); }, 1000); // تحديث القائمة بالكامل إذا امتلأ الباص
-                }
-            }
-        });
-
-        connection.on("ReceiveTripsUpdate", function () {
-            loadTripsPartial();
-        });
-
-        function loadTripsPartial() {
-            var partialUrl = '@Url.Action("GetTripsPartial", "Trip")' + window.location.search;
-            $("#TripsCardsContainer").fadeOut(200, function () {
-                $(this).load(partialUrl, function () {
-                    $(this).fadeIn(200);
-                    updateTripsCount();
-                });
-            });
-        }
-
-        function updateTripsCount() {
-            var tripsCount = $("#TripsCountValue").val();
-            if (tripsCount != undefined) {
-                $("#TripsCountText").html('<i class="bi bi-bus-front me-2"></i>' + tripsCount + ' journeys available for you');
-            }
-        }
-
-        connection.start().then(function () {
-            console.log("Connected to Booking Hub!");
-        }).catch(function (err) {
-            console.error("SignalR Connection Error: ", err.toString());
-        });
-    </script>
-}
